@@ -1,50 +1,64 @@
-<footer class="bg-dark text-light pt-4">
+<footer class="custom-footer">
   <div class="container">
-    <div class="row">
-      <!-- Sección 1: Información de la Empresa -->
-      <div class="col-md-4">
-        <h5>The Victory</h5>
-        <p>
-         Las mejores canchas de Rosario
+    <div class="row gy-5"> <div class="col-lg-4 col-md-6">
+        <div class="brand-header mb-3">
+          <div class="icon-circle-small">
+            <i class="fas fa-futbol"></i>
+          </div>
+          <h5 class="mb-0">Mis Canchas</h5>
+        </div>
+        <p class="description-text">
+          Gestiona tus partidos de la forma más profesional. 
+          Somos el complejo deportivo líder en Rosario, diseñando experiencias únicas para vos y tu equipo.
         </p>
       </div>
-      <!-- Redes Sociales -->
-      <div class="col-md-4">
-        <h5>Seguinos</h5>
-        <ul class="list-unstyled">
-          <li class="list-unstyled-item">
-            <a href="#" class="text-light">
-              <!-- Enlace a Twitter con el icono SVG -->
-              <a href="https://twitter.com/tu_usuario" target="_blank" rel="noopener noreferrer">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M23 5.99998C22.0424 6.6753 20.9821 7.19212 19.86 7.52998C19.2577 6.83744 18.4573 6.34674 17.567 6.12398C16.6767 5.90121 15.7395 5.95708 14.8821 6.2847C14.0247 6.61231 13.2884 7.19424 12.773 7.95398C12.2576 8.71372 11.9877 9.61398 12 10.53V11.53C10.2426 11.5759 8.50127 11.1856 6.93101 10.3955C5.36074 9.60536 4.01032 8.43896 3 6.99998C3 6.99998 -1 15 8 19C5.94053 20.398 3.48716 21.0992 1 20.999C10 26 21 20.999 21 10.5C20.9991 10.2215 20.9723 9.94347 20.92 9.66998C21.9406 8.6635 22.6608 7.39276 23 5.99998Z"
-                    fill="#1DA1F2" />
-                </svg>
-              </a>
-              <i class="bi bi-twitter"></i> Twitter
-            </a>
-          </li>
-          <li class="list-unstyled-item">
-            <!-- Enlace a Instagram con el icono SVG -->
-            <a href="https://www.instagram.com/tu_usuario/" target="_blank" rel="noopener noreferrer">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M7.75 2H16.25C19.0972 2 21.5 4.40279 21.5 7.25V16.25C21.5 19.0972 19.0972 21.5 16.25 21.5H7.75C4.90279 21.5 2.5 19.0972 2.5 16.25V7.25C2.5 4.40279 4.90279 2 7.75 2ZM16.5 3.5H7.5C5.01472 3.5 3 5.51472 3 8V16C3 18.4853 5.01472 20.5 7.5 20.5H16.5C18.9853 20.5 21 18.4853 21 16V8C21 5.51472 18.9853 3.5 16.5 3.5ZM17.5 6.25C17.5 5.83579 17.1642 5.5 16.75 5.5C16.3358 5.5 16 5.83579 16 6.25V7.75C16 8.16421 16.3358 8.5 16.75 8.5C17.1642 8.5 17.5 8.16421 17.5 7.75V6.25ZM12 8.25C9.37665 8.25 7.25 10.3766 7.25 13C7.25 15.6234 9.37665 17.75 12 17.75C14.6234 17.75 16.75 15.6234 16.75 13C16.75 10.3766 14.6234 8.25 12 8.25ZM8.75 13C8.75 11.2051 10.2051 9.75 12 9.75C13.7949 9.75 15.25 11.2051 15.25 13C15.25 14.7949 13.7949 16.25 12 16.25C10.2051 16.25 8.75 14.7949 8.75 13Z"
-                  fill="#E1306C" />
-              </svg>
-            </a>
-            <a href="#" class="text-light">
-              <i class="bi bi-instagram"></i> Instagram
-            </a>
-          </li>
+
+      <div class="col-lg-4 col-md-6 footer-nav-col">
+        <h5 class="section-title">Navegación</h5>
+        <ul class="footer-links">
+          <li><a routerLink="/reservas"><i class="fas fa-chevron-right"></i> Reservar Cancha</a></li>
+          <li><a routerLink="/mis-reservas"><i class="fas fa-chevron-right"></i> Mis Reservas</a></li>
+          <li><a routerLink="/ubicacion"><i class="fas fa-chevron-right"></i> Cómo llegar</a></li>
         </ul>
       </div>
+
+      <div class="col-lg-4 col-md-12">
+        <h5 class="section-title">Contacto</h5>
+        <ul class="list-unstyled contact-info">
+          <li>
+            <div class="icon-box"><i class="fas fa-map-marker-alt"></i></div>
+            <span>Av. Pellegrini 1234, Rosario</span>
+          </li>
+          <li>
+            <div class="icon-box"><i class="fas fa-envelope"></i></div>
+            <span>contacto&#64;miscanchas.com</span>
+          </li>
+          <li>
+            <div class="icon-box"><i class="fas fa-phone"></i></div>
+            <span>+54 341 123-4567</span>
+          </li>
+        </ul>
+
+        <div class="social-section mt-4">
+          <h6 class="text-uppercase text-muted mb-3 small fw-bold">Seguinos</h6>
+          <div class="social-icons">
+            <a href="https://twitter.com" target="_blank" class="social-btn twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://instagram.com" target="_blank" class="social-btn instagram">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://facebook.com" target="_blank" class="social-btn facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
     </div>
-    <!-- Sección de Derechos Reservados -->
-    <div class="text-center py-3">
-      <p class="mb-0">&copy; 2024 Todos los derechos reservados.</p>
+
+    <div class="copyright-section text-center">
+      <p class="mb-0">&copy; 2025 <strong>Mis Canchas</strong>. Todos los derechos reservados.</p>
     </div>
   </div>
 </footer>
-

@@ -14,6 +14,7 @@ import { ApiService } from '../../services/api.service.js';
 import { HttpClientModule } from '@angular/common/http';
 import { Cancha } from '../../models/lista-canchas.models.js';
 import { CanchaService } from '../../services/cancha.service.js';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-canchas',
@@ -31,7 +32,7 @@ export class CanchasComponent implements OnInit {
   @Input() canchas: Cancha[] = []; //Recibe el array de canchas
   mostrarInfo = false;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     console.log('Canchas en el hijo:', this.canchas);
@@ -47,8 +48,12 @@ export class CanchasComponent implements OnInit {
     }
   }
 
-  seleccionarCancha(idCancha: number): void {
-    localStorage.setItem('idCanchaSeleccionada', idCancha.toString());
-    console.log(`Cancha con id ${idCancha} seleccionada`);
+  seleccionarCancha(cancha: Cancha) {
+    console.log('Cancha seleccionada:', cancha);
+    localStorage.setItem('idCancha', cancha.id.toString());
+    if (cancha.id) {
+        localStorage.setItem('idCancha', cancha.id.toString());
+    }
+    this.router.navigate(['/ingreso-reserva']); 
   }
 }

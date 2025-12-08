@@ -1,3 +1,7 @@
 <app-top-page></app-top-page>
-<router-outlet></router-outlet> <!-- Contenedor para el contenido de las rutas -->
-<app-footer></app-footer>
+
+<div [class.admin-mode]="esRutaAdmin()">
+  <router-outlet></router-outlet>
+</div>
+
+<app-footer *ngIf="!esRutaAdmin()"></app-footer>

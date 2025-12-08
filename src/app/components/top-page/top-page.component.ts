@@ -1,35 +1,37 @@
-import { Component } from '@angular/core';
-import { bootstrapApplication } from '@angular/platform-browser';
-import { SobreNosotrosComponent } from '../../ventana-sobre-nosotros-component/sobre-nosotros.component';
+import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ApiService } from '../../services/api.service'; // Importar servicio
 
 @Component({
   selector: 'app-top-page',
   standalone: true,
   imports: [
-    RouterModule, // Remember to always add this!!
+    RouterModule, 
     CommonModule,
   ],
   templateUrl: './top-page.component.html',
   styleUrl: './top-page.component.css',
 })
-export class TopPageComponent {
+export class TopPageComponent implements OnInit {
   usuarioLogueado: any = null;
 
+  // Inyectamos el servicio en el constructor
+  constructor(private apiService: ApiService) {}
+
   ngOnInit(): void {
-    const user = localStorage.getItem('usuarioLogueado');
-    if (user) {
-      this.usuarioLogueado = JSON.parse(user);
-      console.log('Sesión iniciada:', this.usuarioLogueado);
-    }
+    // --- AQUÍ ESTÁ LA MAGIA ---
+    // Nos suscribimos. Cada vez que alguien llame a 'actualizarUsuario' o 'logout'
+    // en el servicio, este código se ejecuta automáticamente y actualiza la vista.
+    this.apiService.usuarioActual$.subscribe(usuario => {
+      this.usuarioLogueado = usuario;
+      console.log('Header detectó cambio de usuario:', this.usuarioLogueado);
+    });
   }
 
   cerrarSesion(): void {
-    localStorage.removeItem('usuarioLogueado');
-    this.usuarioLogueado = null;
-    console.log('Sesión cerrada');
-    window.location.href = '/'; // o Router.navigate()
-}
-
+    // Usamos el método del servicio que limpia todo y avisa
+    this.apiService.logout();
+    window.location.href = '/login'; 
+  }
 }

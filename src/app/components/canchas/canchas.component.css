@@ -1,39 +1,211 @@
-.card-wrapper {
+/* =========================================
+   GRILLA
+   ========================================= */
+/* Contenedor de la grilla */
+.canchas-grid {
+  display: flex;           /* Activa el modo flexible */
+  flex-wrap: wrap;         /* ¡IMPORTANTE! Esto hace que bajen si no entran */
+  justify-content: center; /* Las centra en la pantalla */
+  gap: 30px;               /* Espacio entre tarjetas */
+  width: 100%;
+  padding: 10px;
+}
+
+/* Tarjeta individual */
+.card-cancha {
+  width: 300px;            /* Ancho FIJO para que entren varias por fila */
+  flex-grow: 0;            /* Evita que se estiren demasiado */
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 20px;
   display: flex;
-  flex-wrap: wrap;
-  /* Permite que las tarjetas se envuelvan si no caben */
-  justify-content: flex-start;
-  /* Alinea las tarjetas hacia la izquierda */
-  gap: 2rem;
-  /* Aumenta la separación entre las tarjetas */
-  max-width: 1200px;
-  /* Limita el ancho del contenedor */
-  max-height: 1000px;
-  margin: 0 auto;
-  /* Centra el contenedor */
-  padding: 1rem;
-  /* Agrega espacio interno en el contenedor */
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  /* ... resto de tus estilos de sombra, etc ... */
 }
 
-.card {
-  margin: 1rem;
-  /* Espaciado adicional entre tarjetas */
-  width: 14rem;
-  /* Asegúrate de que tengan un ancho fijo */
-  flex: 0 0 auto; /* Previene que todas las tarjetas intenten estirarse */
-  border: 10px solid #cccccccb;
-  /* Opcional: para una mejor visualización */
+/* Hover sutil: Elevación y borde color acento */
+.card-cancha:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.15);
+  border-color: #cbd5e1;
+}
+
+/* =========================================
+   BARRA SUPERIOR (ID + Status)
+   ========================================= */
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.cancha-id {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b; /* Gris medio */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Badge de estado (Pildora pequeña) */
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* Estado Disponible */
+.status-ok {
+  background-color: #ecfdf5; /* Verde muy claro fondo */
+  color: #059669; /* Texto verde */
+}
+.status-ok .status-dot { background-color: #10b981; }
+
+/* Estado Mantenimiento */
+.status-error {
+  background-color: #fef2f2; /* Rojo muy claro fondo */
+  color: #ef4444; /* Texto rojo */
+}
+.status-error .status-dot { background-color: #ef4444; }
+
+/* =========================================
+   CUERPO PRINCIPAL
+   ========================================= */
+.card-main {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.icon-wrapper {
+  width: 45px;
+  height: 45px;
+  background-color: #f1f5f9; /* Gris fondo icono */
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+}
+
+.cancha-type {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.feature-text {
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+/* =========================================
+   PRECIO Y ACCIÓN
+   ========================================= */
+.divider {
+  height: 1px;
+  background-color: #f1f5f9;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.card-footer-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto; /* Empuja esto al fondo si la tarjeta crece */
+}
+
+.price-container {
+  display: flex;
+  align-items: baseline;
+}
+
+.currency {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.amount {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -1px;
+}
+
+.period {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-left: 4px;
+}
+
+/* BOTÓN DE RESERVA */
+.btn-action {
+  background-color: #0f172a; /* Azul oscuro (Slate 900) */
+  color: white;
+  border: none;
+  padding: 8px 16px;
   border-radius: 8px;
-  /* Opcional: esquinas redondeadas */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* Sombra ligera */
-  align-self: flex-start; /* Cada tarjeta será del tamaño de su contenido */
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.cancha-seleccionada {
-  background-color: #e8f4e5;
-  /* Fondo diferente para destacar */
-  padding: 8px;
-  border-top: 1px solid #aaa;
-  /* Opcional: separador para detalles */
+.btn-action:hover {
+  background-color: #334155; /* Un poco más claro al hover */
+}
+
+/* =========================================
+   ESTADO DESHABILITADO / MANTENIMIENTO
+   ========================================= */
+.disabled-card {
+  background-color: #f8fafc; /* Gris muy claro */
+  border-style: dashed;
+}
+
+.disabled-card .cancha-type, 
+.disabled-card .amount {
+  color: #94a3b8; /* Texto gris */
+}
+
+.disabled-card .icon-wrapper {
+  background-color: #e2e8f0;
+  color: #94a3b8;
+}
+
+.disabled-card .btn-action {
+  background-color: #e2e8f0;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  color: #94a3b8;
+  margin-top: 40px;
+}
+.empty-state i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  opacity: 0.5;
 }

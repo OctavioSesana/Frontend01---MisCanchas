@@ -1,16 +1,55 @@
 <div class="home-container">
-  <button routerLink="/reservas">
-    <i class="fas fa-calendar-plus"></i>
-    <span> Reservar una cancha</span>
-  </button>
   
-  <button routerLink="/mis-reservas">
-    <i class="fas fa-list-alt"></i>
-    <span> Mis reservas</span>
-  </button>
-  
-  <button routerLink="/ubicacion">
-    <i class="fas fa-map-marker-alt"></i>
-    <span> Encontranos</span>
-  </button>
+  <div class="content-wrapper">
+    
+    <div class="header-section">
+      <div class="brand-badge">Gestión Deportiva</div>
+      <h1>Mis Canchas</h1>
+      <p>Bienvenido a tu espacio de juego. Gestiona tus reservas de forma simple.</p>
+    </div>
+
+    <div class="actions-grid">
+      
+      <a routerLink="/reservas" class="action-card card-primary">
+        <div class="icon-container">
+          <i class="fas fa-futbol"></i> </div>
+        <div class="card-text">
+          <h3>Reservar</h3>
+          <span>Buscar cancha disponible</span>
+        </div>
+      </a>
+      
+      <a routerLink="/mis-reservas" class="action-card">
+        <div class="icon-container">
+          <i class="fas fa-ticket-alt"></i>
+        </div>
+        <div class="card-text">
+          <h3>Mis Reservas</h3>
+          <span>Ver historial y estados</span>
+        </div>
+      </a>
+
+      <a routerLink="/mis-estadisticas" class="action-card">
+        <div class="icon-container">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="card-text">
+          <h3>Mi Actividad</h3>
+          <span>Ver mis estadísticas</span>
+        </div>
+      </a>
+      
+      <a routerLink="/ubicacion" class="action-card">
+        <div class="icon-container">
+          <i class="fas fa-map-marked-alt"></i>
+        </div>
+        <div class="card-text">
+          <h3>Ubicación</h3>
+          <span>Cómo llegar al predio</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
 </div>

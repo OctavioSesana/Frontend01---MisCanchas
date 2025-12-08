@@ -1,83 +1,155 @@
-.cancha-container {
-  display: flex;
-  flex-wrap: wrap;
-  /* Permite que los elementos se envuelvan */
-  gap: 1rem;
-  margin-bottom: 40px;
-  z-index: 40;
-  background-color: #052bd7;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  justify-content: flex-start;
-  /* Alineación inicial en móviles */
-    display: block;
-}
-
-
-
-/* Estilos base (para dispositivos móviles) */
-button {
-  background-color: #052bd7;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  position: relative;
-  top: 0px;
-  margin: 10px auto;
-  /* Centrado horizontal en móvil */
-  display: block;
-  /* Se quita flex, los botones deben ser bloques en móvil */
-  z-index: 20;
-}
-
-/* Estilos para pantallas grandes (escritorio) */
-@media (min-width: 1024px) {
-  .cancha-container {
-    display: flex;
-    /* Hacemos que el contenedor sea flex en escritorio */
-    justify-content: center;
-    /* Centra los botones en la pantalla */
-    
-  }
-
-  button {
-    font-size: 20px;
-    padding: 5px 12px;
-    /* Ajuste del tamaño del padding */
-    margin: 0 10px;
-    /* Espacio entre los botones */
-    display: inline-block;
-    /* Los botones ahora estarán uno al lado del otro */
-  }
-}
-
-button:hover {
-  background-color: #030e6c;
-}
-
-
+/* =========================================
+   CONTENEDOR PRINCIPAL
+   ========================================= */
 .home-container {
-  background-image: url('/assets/images/FondoReserva.webp');
+  min-height: 100vh;
+  width: 100%;
+  padding: 40px 20px;
+  position: relative;
+  
+  /* Mantenemos el fondo oscuro pero con el tinte Slate del Navbar */
+  background: linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.85)), 
+              url('/assets/images/FondoReserva.webp');
   background-size: cover;
-  /* Ajusta la imagen para que cubra todo el contenedor */
   background-position: center;
-  /* Centra la imagen */
-  height: 100vh;
-  /* Altura del contenedor */
-  justify-content: flex-start;
-  /* Alinea los elementos al inicio */
+  background-attachment: fixed;
+  
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #f8fafc; /* Blanco hueso para textos generales */
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  /* Centra los elementos horizontalmente */
-  padding-top: 50px;
-  /* Espacio adicional en la parte superior si es necesario */
-  z-index: 10;
-    color: white;
+}
+
+/* TÍTULOS */
+h1 {
+  font-weight: 700;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px; /* Tracking moderno */
+  text-align: center;
+}
+
+p {
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+  color: #94a3b8; /* Gris Slate claro */
+  text-align: center;
+  font-weight: 300;
+}
+
+/* =========================================
+   FILTROS (Estilo Tabs / Píldoras)
+   ========================================= */
+.filters-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 50px;
+  background-color: rgba(255, 255, 255, 0.05); /* Fondo muy sutil para el grupo */
+  padding: 5px;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.filter-btn {
+  background-color: transparent;
+  border: none;
+  color: #cbd5e1; /* Gris texto */
+  padding: 8px 20px;
+  border-radius: 40px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Clase activa para el filtro seleccionado (tendrías que agregar lógica TS o usar focus) */
+.filter-btn:focus, .filter-btn.active {
+  background-color: white;
+  color: #0f172a; /* Texto oscuro sobre blanco */
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* =========================================
+   BOTÓN VOLVER
+   ========================================= */
+.btn-volver {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #cbd5e1;
+  padding: 8px 16px;
+  border-radius: 8px; /* Menos redondo, más "tech" */
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-volver:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: white;
+}
+
+/* =========================================
+   ALERTA MERCADOPAGO (Más limpia)
+   ========================================= */
+.alert-mercadopago {
+  background-color: rgba(15, 23, 42, 0.8); /* Fondo oscuro */
+  border: 1px solid rgba(56, 189, 248, 0.3); /* Borde celeste sutil */
+  color: #e0f2fe;
+  padding: 15px 25px;
+  border-radius: 12px;
+  margin-top: 40px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.alert-mercadopago i {
+  color: #38bdf8; /* Celeste claro */
+  font-size: 1.2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .btn-volver {
+    position: static; /* En celular que fluya con el contenido */
+    margin-bottom: 20px;
+    align-self: flex-start;
+  }
+  
+  .filters-container {
+    flex-wrap: wrap;
     justify-content: center;
-    text-align: center;
-      /* Alinea el texto en el centro */    
+    background: transparent;
+    border: none;
+  }
+  
+  .filter-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    width: 100%;
+  }
+}
+
+/* Contenedor intermedio */
+.canchas-wrapper {
+  width: 100%;             /* Que ocupe todo el ancho disponible */
+  max-width: 1200px;       /* Tope máximo para que no se desparramen en monitores gigantes */
+  display: flex;           
+  justify-content: center; /* Asegura que el bloque de canchas esté centrado */
 }

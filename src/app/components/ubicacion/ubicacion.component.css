@@ -1,10 +1,244 @@
-.fondo-cancha {
-  background-image: url('/assets/images/campNou.jpg');
+/* =========================================
+   CONTENEDOR GENERAL
+   ========================================= */
+.main-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  
+  /* Fondo consistente Dark Slate */
+  background: linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.85)), 
+              url('/assets/images/FondoReserva.webp'); /* Misma imagen que reservas */
   background-size: cover;
   background-position: center;
-  min-height: 100vh;
+  background-attachment: fixed;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  position: relative;
+}
+
+/* =========================================
+   TARJETA PRINCIPAL
+   ========================================= */
+.location-card {
+  background-color: white;
+  width: 100%;
+  max-width: 1100px;
+  border-radius: 24px; /* Bordes bien redondeados */
+  overflow: hidden;    /* Para que el mapa no se salga de los bordes */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   display: flex;
+  flex-direction: column;
+  animation: scaleUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* =========================================
+   PANEL IZQUIERDO (INFO)
+   ========================================= */
+.info-panel {
+  padding: 50px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #ffffff;
+}
+
+/* Encabezado */
+.header-section {
+  margin-bottom: 40px;
+}
+
+.badge-subtitle {
+  background-color: #ecfdf5; /* Verde menta claro */
+  color: #059669; /* Verde esmeralda texto */
+  padding: 6px 12px;
+  border-radius: 30px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  display: inline-block;
+}
+
+h3 {
+  color: #0f172a; /* Dark Slate */
+  font-weight: 800;
+  font-size: 2.5rem;
+  margin: 10px 0 15px 0;
+  letter-spacing: -1px;
+}
+
+.description {
+  color: #64748b; /* Gris texto */
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+/* Lista de Contacto */
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center; /* Alineado al centro verticalmente */
+  gap: 20px;
+}
+
+.icon-box {
+  background-color: #f1f5f9; /* Gris muy claro */
+  color: #0f172a;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px; /* Cuadrado redondeado moderno */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+/* Efecto hover en el ítem completo */
+.contact-item:hover .icon-box {
+  background-color: #0f172a;
+  color: #10b981; /* Icono verde sobre fondo oscuro */
+  transform: rotate(-5deg);
+}
+
+.details h5 {
+  margin: 0 0 4px;
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 1rem;
+}
+
+.details p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+/* Botón GPS */
+.btn-gps {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  gap: 10px;
+  background-color: #0f172a;
+  color: white;
+  text-decoration: none;
+  padding: 16px 30px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  align-self: flex-start;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-gps:hover {
+  background-color: #1e293b;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================================
+   PANEL DERECHO (MAPA)
+   ========================================= */
+.map-panel {
+  flex: 1.2; /* El mapa es un poco más ancho que la info en PC */
+  min-height: 400px;
+  position: relative;
+  background-color: #e2e8f0; /* Color de fondo mientras carga */
+}
+
+.map-frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  filter: grayscale(20%); /* Desatura un poco el mapa para que sea más elegante */
+  transition: filter 0.3s;
+}
+
+.map-frame:hover {
+  filter: grayscale(0%); /* A todo color al pasar el mouse */
+}
+
+/* =========================================
+   BOTÓN VOLVER
+   ========================================= */
+.btn-volver {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #cbd5e1;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+}
+
+.btn-volver:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: white;
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+@media (min-width: 992px) {
+  .location-card {
+    flex-direction: row; /* Lado a lado en PC */
+  }
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    padding: 20px;
+    padding-top: 80px; /* Espacio para el botón volver */
+  }
+  
+  .info-panel {
+    padding: 30px 20px;
+  }
+  
+  h3 {
+    font-size: 2rem;
+  }
+  
+  .btn-gps {
+    width: 100%; /* Botón ancho completo en móvil */
+  }
+  
+  .map-panel {
+    height: 300px; /* Altura fija en móvil */
+    min-height: auto;
+  }
+
+  .btn-volver {
+    top: 20px;
+    left: 20px;
+  }
 }

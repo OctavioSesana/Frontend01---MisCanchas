@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { CommonModule, Location } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // Importante para ngModel
 import { RouterModule } from '@angular/router';
 import { Reserva } from '../../models/lista-reservas.models';
 import { ApiService } from '../../services/api.service';
-import { Cancha } from '../../models/lista-canchas.models'; // Asegurate de importar
 
 @Component({
   selector: 'app-ingreso-reserva',
@@ -14,24 +13,45 @@ import { Cancha } from '../../models/lista-canchas.models'; // Asegurate de impo
   styleUrls: ['./ingreso-reserva.component.css'],
 })
 export class IngresoReservaComponent implements OnInit {
+  // Datos de la reserva
   reserva: Reserva = {
     id: 0,
     fechaReserva: '',
     horaInicio: '',
     horaFin: '',
-    totalReserva: 0, // ✅ Ahora lo dejamos en 0 y lo setea dinámico
+    totalReserva: 0,
     mail_cliente: '',
     idCancha: 0,
     idEmpleado: 0,
   };
 
+  // Estados de la vista
   reservaConfirmada: boolean = false;
   emailRegistrado: boolean = true;
   usuarioConectado: boolean = false;
+  
+  // Variables para lógica de fechas y turnos
+  fechaMinima: string = ''; // <--- NUEVA VARIABLE
+  turnosDisponibles: string[] = [];
+  cargandoTurnos: boolean = false;
+  turnoSeleccionado: string | null = null;
 
-  constructor(private apiService: ApiService) {}
+  // Horarios del club
+  horariosClub: string[] = [
+    '09:00', '10:00', '11:00', '12:00', '13:00', '14:00',
+    '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', 
+    '21:00', '22:00', '23:00'
+  ];
+
+  constructor(private apiService: ApiService, private location: Location) {}
 
   ngOnInit(): void {
+    // 1. BLOQUEAR FECHAS PASADAS
+    const hoy = new Date();
+    // Formato YYYY-MM-DD para el input date
+    this.fechaMinima = hoy.toISOString().split('T')[0]; 
+
+    // 2. Cargar usuario
     const personaGuardada = localStorage.getItem('usuarioLogueado');
     if (personaGuardada) {
       const usuario = JSON.parse(personaGuardada);
@@ -41,90 +61,101 @@ export class IngresoReservaComponent implements OnInit {
       this.usuarioConectado = false;
     }
 
-    const idCanchaSeleccionada = localStorage.getItem('idCanchaSeleccionada');
+    // 3. Cargar Cancha
+    const idCanchaSeleccionada = localStorage.getItem('idCancha');
     if (idCanchaSeleccionada) {
       this.reserva.idCancha = Number(idCanchaSeleccionada);
     }
   }
 
-  actualizarHoraFin(): void {
-    if (this.reserva.horaInicio) {
-      const [hora, minutos] = this.reserva.horaInicio.split(':').map(Number);
-      let nuevaHora = hora + 1;
-      if (nuevaHora >= 24) nuevaHora -= 24;
-
-      const horaFormateada = nuevaHora.toString().padStart(2, '0') + ':' + minutos.toString().padStart(2, '0');
-      this.reserva.horaFin = horaFormateada;
+  // --- Lógica de Disponibilidad ---
+  onFechaChange(): void {
+    if (this.reserva.fechaReserva && this.reserva.idCancha) {
+      this.cargarTurnosDisponibles();
     }
   }
 
+  cargarTurnosDisponibles(): void {
+    this.cargandoTurnos = true;
+    this.turnosDisponibles = [];
+    this.turnoSeleccionado = null; 
+
+    this.apiService.getReservasByCanchaFecha(this.reserva.idCancha, this.reserva.fechaReserva)
+      .subscribe({
+        next: (reservasOcupadas: any[]) => {
+          const horasOcupadas = reservasOcupadas.map(r => r.horaInicio);
+          this.turnosDisponibles = this.horariosClub.filter(hora => !horasOcupadas.includes(hora));
+          this.cargandoTurnos = false;
+        },
+        error: (err) => {
+          console.error('Error al cargar turnos:', err);
+          this.cargandoTurnos = false;
+        }
+      });
+  }
+
+  seleccionarTurno(hora: string): void {
+    this.turnoSeleccionado = hora;
+    this.reserva.horaInicio = hora;
+
+    const [horasStr, minutosStr] = hora.split(':');
+    let horaNum = parseInt(horasStr, 10);
+    let nuevoHorario = horaNum + 1;
+    
+    if (nuevoHorario >= 24) nuevoHorario -= 24;
+    const horaFinStr = nuevoHorario.toString().padStart(2, '0');
+    
+    this.reserva.horaFin = `${horaFinStr}:${minutosStr}`;
+  }
+
   saveReserva(): void {
-    console.log('Iniciando guardado de reserva con datos:', this.reserva);
+    if (!this.turnoSeleccionado) {
+      alert('Por favor, elegí un turno disponible antes de confirmar.');
+      return;
+    }
 
     this.apiService.getCanchaById(this.reserva.idCancha).subscribe({
       next: (response) => {
-        console.log('Datos cancha recibidos:', response);
-        console.log('Cancha recibida desde backend:', response);
-        const canchaData = response.data;
+        const canchaData = response.data || response; 
+        
         if (canchaData && canchaData.precioHora) {
-          // ✅ Asignar precioHora como totalReserva
           this.reserva.totalReserva = canchaData.precioHora;
-          console.log('TotalReserva actualizado desde precioHora:', this.reserva.totalReserva);
 
-          // Verificar persona
           this.apiService.getPersona(this.reserva.mail_cliente).subscribe({
             next: (persona) => {
               if (persona) {
                 this.apiService.saveReserva(this.reserva).subscribe({
-                  next: (response) => {
+                  next: (resReserva) => {
                     this.reservaConfirmada = true;
-                    console.log('Reserva confirmada:', response);
-
-                    this.apiService.updateCanchaStatus(this.reserva.idCancha, 'ocupada').subscribe({
-                      next: () => {
-                        console.log('Estado de cancha actualizado a ocupada');
-                      },
-                      error: (err) => {
-                        console.error('Error al actualizar estado de cancha:', err);
-                      }
-                    });
-
-                    // Redirigir a MercadoPago
-                    const linkPago = response.init_point;
+                    if (this.turnoSeleccionado) {
+                        this.turnosDisponibles = this.turnosDisponibles.filter(t => t !== this.turnoSeleccionado);
+                        this.turnoSeleccionado = null; 
+                    }
+                    
+                    const linkPago = resReserva.init_point;
                     if (linkPago) {
-                      console.log('Redirigiendo a MercadoPago:', linkPago);
                       window.location.href = linkPago;
                     } else {
-                      console.warn('No se recibió link de pago, redirigiendo al home.');
-                      setTimeout(() => {
-                        window.location.href = '/';
-                      }, 3000);
+                      setTimeout(() => { window.location.href = '/'; }, 3000);
                     }
                   },
-                  error: (err) => {
-                    console.error('Error al guardar reserva:', err);
-                  }
+                  error: (err) => console.error('Error al guardar reserva:', err)
                 });
               } else {
                 this.emailRegistrado = false;
-                this.reservaConfirmada = false;
-                console.warn('Email no registrado');
               }
             },
             error: (err) => {
               this.emailRegistrado = false;
-              this.reservaConfirmada = false;
-              console.error('Error al verificar persona:', err);
             }
           });
-
-        } else {
-          console.error('No se encontró canchaClass o precioHora');
         }
       },
-      error: (err) => {
-        console.error('Error al obtener la cancha:', err);
-      }
+      error: (err) => console.error('Error obteniendo datos de la cancha:', err)
     });
+  }
+
+  volver(): void {
+    this.location.back();
   }
 }

@@ -1,16 +1,23 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
-import { provideRouter } from '@angular/router';
-import { routes } from './app/app.routes'; // Importa el array desde app.routes.ts
 import { AppComponent } from './app/app.component';
-import { VentanaReservasComponent } from './app/components/ventana-reservas/ventana-reservas.component.js';
+import { provideRouter } from '@angular/router';
+import { routes } from './app/app.routes';
 
-//bootstrapApplication(AppComponent, appConfig) // Esto venía (o lo puse yo copiando) y lo saqué
-  //.catch((err) => console.error(err)); //No se si está bien pero funciona igual
+// 1. IMPORTAR LAS HERRAMIENTAS HTTP
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
-  bootstrapApplication(AppComponent, {
+// 2. IMPORTAR TU INTERCEPTOR (Chequeá que la ruta sea correcta)
+import { authInterceptor } from './app/core/interceptors/auth.interceptor'; 
+
+bootstrapApplication(AppComponent, {
   providers: [
-    provideRouter(routes)  // Usa el array de rutas exportado
+    provideRouter(routes), // Tus rutas
+
+    // 3. ACÁ ESTÁ LA SOLUCIÓN AL ERROR
+    // Esto habilita el cliente HTTP y conecta el Interceptor para enviar el Token
+    provideHttpClient(
+      withInterceptors([authInterceptor]) 
+    )
   ]
 })
 .catch(err => console.error(err));

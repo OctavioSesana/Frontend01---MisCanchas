@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Persona } from '../../models/lista-personas.models';
 import { ApiService } from '../../services/api.service';
 import { PersonaService } from '../../services/persona.service';
-import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-mi-cuenta',
@@ -21,48 +20,71 @@ export class VentanaMiCuentaComponent implements OnInit {
     lastname: '',
     dni: 0,
     email: '',
-    phone: 0,
+    phone: '',
     password: '',
   };
 
-  emailInput: string = '';
-  emailValidado = false;
-  emailInvalido = false;
+  // reportes
+  usuarioId: number = 1; // TODO: Obtener esto dinámicamente de tu AuthService o localStorage
+  
+  reporte = {
+    totalReservas: 0,
+    diaFavorito: 'Cargando...',
+    canchasStats: [] as any[]
+  };
+
   mostrarFormularioEdicion = false;
   actualizacionExitosa = false;
+  loading = false;
 
   constructor(
     private apiService: ApiService,
     private personaService: PersonaService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
+    // 1. Intentar cargar desde el servicio (estado global)
     this.personaService.persona$.subscribe((persona) => {
       if (persona) {
-        this.persona = persona;
-        this.emailValidado = true;
-        this.cdr.detectChanges(); // si usás ChangeDetectorRef
+        this.persona = { ...persona }; // Copia para no mutar directo
+        this.cdr.detectChanges();
       } else {
-        this.emailValidado = false;
+        // 2. Fallback: Cargar desde localStorage si se recargó la página
+        const personaGuardada = localStorage.getItem('usuarioLogueado');
+        if (personaGuardada) {
+          this.persona = JSON.parse(personaGuardada);
+        }
       }
     });
   }
 
-  verificarEmail(): void {
-    this.apiService.getPersona(this.emailInput).subscribe(
-      (data) => {
-        this.persona = data;
-        this.emailValidado = true;
-        this.emailInvalido = false;
-        this.mostrarFormularioEdicion = false;
+  cargarReporte() {
+    this.apiService.getReporteUsuario(this.usuarioId).subscribe({
+      next: (response) => {
+        if(response && response.data) {
+          this.reporte = {
+            totalReservas: response.data.totalReservas,
+            diaFavorito: response.data.diaFavorito,
+            canchasStats: response.data.canchaFavorita
+          };
+        }
+        this.loading = false;
       },
-      () => {
-        this.emailValidado = false;
-        this.emailInvalido = true;
-        this.mostrarFormularioEdicion = false;
+      error: (err) => {
+        console.error('Error cargando reporte', err);
+        this.reporte.diaFavorito = 'No disponible';
+        this.loading = false;
       }
-    );
+    });
+  }
+
+  // Helper para mostrar iniciales en el avatar
+  getInitials(): string {
+    const n = this.persona.name ? this.persona.name.charAt(0) : '';
+    const l = this.persona.lastname ? this.persona.lastname.charAt(0) : '';
+    return (n + l).toUpperCase();
   }
 
   irAModificar(): void {
@@ -70,27 +92,35 @@ export class VentanaMiCuentaComponent implements OnInit {
   }
 
   guardarCambios(): void {
+    this.loading = true;
     const emailOriginal = this.persona.email;
 
-    this.apiService.updatePersonaByEmail(emailOriginal, this.persona).subscribe(
-      (response: any) => {
-        // si usás tipos, pon 'any' o define la interfaz correcta
+    this.apiService.updatePersonaByEmail(emailOriginal, this.persona).subscribe({
+      next: (response: any) => {
         console.log('✅ Persona actualizada:', response);
-
-        this.persona = response.data;
-        this.personaService.savePersona(response.data);
+        
+        // Actualizamos los datos locales
+        const updatedPersona = response.data || this.persona;
+        this.persona = updatedPersona;
+        this.personaService.savePersona(updatedPersona); // Actualiza localStorage y Subject
 
         this.mostrarFormularioEdicion = false;
         this.actualizacionExitosa = true;
+        this.loading = false;
 
         setTimeout(() => {
           this.actualizacionExitosa = false;
         }, 3000);
       },
-      (error) => {
+      error: (error) => {
         console.error('❌ Error al actualizar:', error);
         alert('Ocurrió un error al intentar actualizar tus datos.');
+        this.loading = false;
       }
-    );
+    });
+  }
+
+  volver(): void {
+    this.location.back();
   }
 }

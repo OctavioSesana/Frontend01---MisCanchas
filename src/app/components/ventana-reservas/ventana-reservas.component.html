@@ -1,18 +1,34 @@
 <div class="home-container">
+ <button class="btn-volver" (click)="volver()">
+    <i class="fas fa-arrow-left"></i> Volver
+  </button>
+
   <h1>¡Reservá ahora!</h1>
-  <p>¿Qué tipo de cancha querés?</p>
+  <p>Seleccioná tu tipo de cancha preferida</p>
 
-  <button (click)="filtrarCanchas('futbol 7')" aria-label="Filtrar canchas de Fútbol 7">Fútbol 7</button>
-  <button (click)="filtrarCanchas('futbol 5')" aria-label="Filtrar canchas de Fútbol 5">Fútbol 5</button>
-  <button (click)="mostrarTodas()" aria-label="Mostrar todas las canchas">Mostrar disponibles</button>
-
-  <!-- Mostrar lista de canchas -->
-  <div>
-    <app-canchas [canchas]="lista_canchas"></app-canchas> <!--pasa todo el arreglo a CANCHAS-->
+  <div class="filters-container">
+    <button class="filter-btn" (click)="filtrarCanchas('futbol 7')">
+      Fútbol 7
+    </button>
+    
+    <button class="filter-btn" (click)="filtrarCanchas('futbol 5')">
+      Fútbol 5
+    </button>
+    
+    <button class="filter-btn" (click)="mostrarTodas()">
+      Todas las canchas disponibles
+    </button>
   </div>
 
-  <div class="alert alert-info" role="alert" style="margin-top: 20px;">
-    ATENCIÓN: Una vez confirmada la reserva, ud. será redirigido para abonar una seña del 50% de la misma a través de Mercado Pago.
+  <div class="canchas-wrapper">
+    <app-canchas [canchas]="lista_canchas"></app-canchas>
+  </div>
+
+  <div class="alert-mercadopago" role="alert">
+    <i class="fas fa-info-circle"></i>
+    <span>
+      <strong>ATENCIÓN:</strong> Una vez confirmada la reserva, serás redirigido para abonar una seña del 50% a través de <strong>Mercado Pago</strong>.
+    </span>
   </div>
 
 </div>

@@ -1,0 +1,423 @@
+<div *ngIf="mostrarMensajeExito" class="toast-success">
+  <i class="fas fa-check-circle"></i> {{ textoMensajeExito }}
+</div>
+
+<div class="admin-layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon"><i class="fas fa-shield-alt"></i></div>
+      <div class="brand-text">
+        <h3>Admin</h3>
+        <span>Panel de Control</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-menu">
+      <button (click)="cambiarSeccion('dashboard')" [class.active]="seccionActual === 'dashboard'">
+        <i class="fas fa-chart-pie"></i>
+        <span>Dashboard</span>
+      </button>
+      
+      <button (click)="cambiarSeccion('reservas')" [class.active]="seccionActual === 'reservas'">
+        <i class="far fa-calendar-alt"></i>
+        <span>Reservas</span>
+      </button>
+
+      <button (click)="cambiarSeccion('usuarios')" [class.active]="seccionActual === 'usuarios'">
+        <i class="far fa-user"></i>
+        <span>Clientes</span>
+      </button>
+
+      <button (click)="cambiarSeccion('canchas')" [class.active]="seccionActual === 'canchas'">
+        <i class="far fa-futbol"></i>
+        <span>Canchas</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-logout" (click)="cerrarSesion()">
+        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    
+    <header class="topbar">
+      <div class="welcome-text">
+        <h2>Hola, {{ usuarioAdmin?.name }}</h2>
+        <p>Aquí tienes el resumen de hoy</p>
+      </div>
+      <div class="date-pill">
+        <i class="far fa-calendar"></i> {{ fechaHoy }}
+      </div>
+    </header>
+
+    <div *ngIf="seccionActual === 'dashboard'" class="view-dashboard fade-in">
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon icon-blue"><i class="fas fa-calendar-check"></i></div>
+          <div class="stat-info">
+            <span class="value">{{ stats.reservasHoy }}</span>
+            <span class="label">Reservas Hoy</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon icon-green"><i class="fas fa-dollar-sign"></i></div>
+          <div class="stat-info">
+            <span class="value">${{ stats.recaudacionMes | number }}</span>
+            <span class="label">Ingresos Mes</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon icon-purple"><i class="fas fa-users"></i></div>
+          <div class="stat-info">
+            <span class="value">{{ stats.totalUsuarios }}</span>
+            <span class="label">Clientes</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon icon-orange"><i class="fas fa-whistle"></i></div>
+          <div class="stat-info">
+            <span class="value">{{ stats.canchasActivas }}</span>
+            <span class="label">Canchas Activas</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-content-grid">
+        
+        <div class="card-section hoy-section">
+          <div class="card-header-simple">
+            <h3>📅 Reservas del Día</h3>
+            <span class="badge-count">{{ reservasDeHoy.length }}</span>
+          </div>
+
+          <div class="today-list-container">
+            
+            <div *ngIf="cargandoDashboard" class="text-center py-3 text-muted">
+                <i class="fas fa-spinner fa-spin"></i> Cargando...
+            </div>
+
+            <table class="table-simple" *ngIf="!cargandoDashboard && reservasDeHoy.length > 0">
+              <thead>
+                <tr>
+                  <th>Hora</th>
+                  <th>Cancha</th>
+                  <th>Cliente</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let res of reservasDeHoy">
+                  <td class="time-cell"><i class="far fa-clock"></i> {{ res.horaInicio }}</td>
+                  <td><span class="pill-cancha-sm">Cancha {{ res.idCancha }}</span></td>
+                  <td class="text-muted small">{{ res.mail_cliente }}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div *ngIf="!cargandoDashboard && reservasDeHoy.length === 0" class="empty-today">
+              <i class="fas fa-coffee"></i>
+              <p>No hay reservas programadas para hoy.</p>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="charts-column">
+          
+          <div class="card-section chart-card">
+            <h4>📊 Ocupación este Mes</h4>
+            
+            <div class="chart-wrapper" *ngIf="graficoMes.length > 0">
+              <div class="pie-chart" [style.background]="gradientMes"></div>
+              <div class="chart-legend">
+                <div *ngFor="let d of graficoMes" class="legend-item">
+                  <span class="dot" [style.background-color]="d.color"></span>
+                  <span class="lbl">{{ d.label }}</span>
+                  <span class="pct">{{ d.porcentaje }}%</span>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="graficoMes.length === 0 && !cargandoDashboard" class="text-center py-4 text-muted">
+              <small>Sin datos registrados este mes.</small>
+            </div>
+          </div>
+
+          <div class="card-section chart-card">
+            <h4>📈 Histórico Total</h4>
+            
+            <div class="chart-wrapper" *ngIf="graficoHistorico.length > 0">
+              <div class="pie-chart" [style.background]="gradientHistorico"></div>
+              <div class="chart-legend">
+                <div *ngFor="let d of graficoHistorico" class="legend-item">
+                  <span class="dot" [style.background-color]="d.color"></span>
+                  <span class="lbl">{{ d.label }}</span>
+                  <span class="pct">{{ d.porcentaje }}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="seccionActual === 'reservas'" class="view-section fade-in">
+      
+      <div class="section-actions">
+        <h3>Gestión de Reservas</h3>
+        <button class="btn-refresh" (click)="cargarTodasLasReservas()">
+          <i class="fas fa-sync-alt"></i> Actualizar
+        </button>
+      </div>
+
+      <div class="filters-card">
+        <div class="filter-group grow">
+          <label>Buscar por Email</label>
+          <div class="input-icon-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Ej: cliente@email.com" 
+                   [(ngModel)]="filtroEmail" (input)="aplicarFiltros()">
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label>Cancha</label>
+          <select [(ngModel)]="filtroCancha" (change)="aplicarFiltros()">
+            <option value="todas">Todas</option>
+            <option *ngFor="let n of [1,2,3,4,5,6,7,8]" [value]="n">Cancha {{n}}</option>
+          </select>
+        </div>
+
+        <div class="filter-actions">
+           <button class="btn-clear" (click)="limpiarFiltros()" title="Limpiar"><i class="fas fa-eraser"></i></button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th (click)="alternarOrden()" class="sortable">Fecha <i class="fas fa-sort"></i></th>
+              <th>Horario</th>
+              <th>Cancha</th>
+              <th>Cliente</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let reserva of reservasFiltradas">
+              <td class="font-mono">#{{ reserva.id }}</td>
+              <td><span class="pill-date">{{ reserva.fechaReserva }}</span></td>
+              <td>{{ reserva.horaInicio }} - {{ reserva.horaFin }}</td>
+              <td>
+                <span class="pill-cancha">Cancha {{ reserva.idCancha }}</span>
+              </td>
+              <td>
+                <div class="user-cell">
+                  <div class="avatar-xs">{{ reserva.mail_cliente.charAt(0).toUpperCase() }}</div>
+                  <span class="email-text">{{ reserva.mail_cliente }}</span>
+                </div>
+              </td>
+              <td class="text-end">
+                <button *ngIf="esCancelable(reserva.fechaReserva)" 
+                        class="btn-icon-danger" 
+                        (click)="reserva.id && abrirModalCancelacion(reserva.id)"
+                        title="Cancelar">
+                  <i class="far fa-trash-alt"></i>
+                </button>
+                <span *ngIf="!esCancelable(reserva.fechaReserva)" class="status-done">Finalizada</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf="seccionActual === 'usuarios'" class="view-section fade-in">
+      
+      <div class="section-actions">
+        <h3>Listado de Clientes</h3>
+        <button class="btn-refresh" (click)="cargarUsuarios()">
+          <i class="fas fa-sync-alt"></i> Actualizar
+        </button>
+      </div>
+
+      <div class="filters-card">
+        <div class="filter-group grow">
+          <label>Buscar Cliente</label>
+          <div class="input-icon-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Nombre, apellido o email..." 
+                   [(ngModel)]="filtroUsuarioInput" (input)="aplicarFiltroUsuarios()">
+          </div>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Teléfono</th>
+              <th>DNI</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of usuariosFiltrados">
+              <td>
+                <div class="user-cell">
+                  <div class="avatar-sm">{{ user.name.charAt(0).toUpperCase() }}</div>
+                  <strong>{{ user.name }} {{ user.lastname }}</strong>
+                </div>
+              </td>
+              <td>{{ user.email }}</td>
+              <td>
+                <a href="https://wa.me/{{ user.phone }}" target="_blank" class="link-whatsapp">
+                  <i class="fab fa-whatsapp"></i> {{ user.phone }}
+                </a>
+              </td>
+              <td>{{ user.dni }}</td>
+              <td><span class="status-active">Activo</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf="seccionActual === 'canchas'" class="view-section fade-in">
+      
+      <div class="section-actions">
+        <h3>Administración de Canchas</h3>
+        <div class="actions-group">
+          <button class="btn-primary-action" (click)="abrirModalCreacion()">
+            <i class="fas fa-plus"></i> Nueva
+          </button>
+          <button class="btn-refresh" (click)="cargarCanchas()">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="filters-card">
+        <div class="tabs-group">
+          <button [class.active]="filtroTipoCancha === 'todas'" (click)="filtroTipoCancha = 'todas'; aplicarFiltroCanchas()">Todas</button>
+          <button [class.active]="filtroTipoCancha === 'futbol 5'" (click)="filtroTipoCancha = 'futbol 5'; aplicarFiltroCanchas()">Fútbol 5</button>
+          <button [class.active]="filtroTipoCancha === 'futbol 7'" (click)="filtroTipoCancha = 'futbol 7'; aplicarFiltroCanchas()">Fútbol 7</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Cancha</th>
+              <th>Tipo</th>
+              <th>Precio / Hora</th>
+              <th>Estado</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cancha of canchasFiltradas">
+              <td><strong>Cancha Nº {{ cancha.id }}</strong></td>
+              <td>
+                <span class="pill-type">{{ cancha.tipoCancha | uppercase }}</span>
+              </td>
+              <td>
+                <div *ngIf="!cancha.editando" class="price-cell">
+                  <span>${{ cancha.precioHora | number }}</span>
+                  <button class="btn-icon-edit" (click)="activarEdicion(cancha)">
+                    <i class="fas fa-pencil-alt"></i>
+                  </button>
+                </div>
+                <div *ngIf="cancha.editando" class="edit-price-wrapper">
+                   <input type="number" [(ngModel)]="cancha.precioTemporal" class="input-xs">
+                   <button class="btn-icon-check" (click)="guardarPrecio(cancha)"><i class="fas fa-check"></i></button>
+                   <button class="btn-icon-cancel" (click)="cancelarEdicion(cancha)"><i class="fas fa-times"></i></button>
+                </div>
+              </td>
+              <td>
+                <span class="status-badge" [ngClass]="cancha.estado === 'disponible' ? 'status-ok' : 'status-err'">
+                  {{ cancha.estado | titlecase }}
+                </span>
+              </td>
+              <td class="text-end">
+                <button class="btn-toggle-status" 
+                        [class.btn-disable]="cancha.estado === 'disponible'"
+                        [class.btn-enable]="cancha.estado !== 'disponible'"
+                        (click)="abrirModalEstado(cancha)">
+                  {{ cancha.estado === 'disponible' ? 'Deshabilitar' : 'Habilitar' }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="modal-overlay" *ngIf="idReservaAEliminar !== null">
+  <div class="modal-card">
+    <div class="modal-icon warning"><i class="fas fa-exclamation-triangle"></i></div>
+    <h4>¿Eliminar Reserva?</h4>
+    <p>Esta acción liberará la cancha y no se puede deshacer.</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn-danger" (click)="confirmarEliminacion()">Sí, Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="mostrarModalCreacion">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h4>Nueva Cancha</h4>
+    </div>
+    <div class="modal-body">
+      <form (ngSubmit)="guardarCancha()">
+        <div class="form-group">
+          <label>Tipo</label>
+          <select [(ngModel)]="nuevaCancha.tipoCancha" name="tipo" class="form-control">
+            <option value="futbol 5">Fútbol 5</option>
+            <option value="futbol 7">Fútbol 7</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Precio Hora</label>
+          <input type="number" [(ngModel)]="nuevaCancha.precioHora" name="precio" class="form-control" placeholder="$">
+        </div>
+      </form>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" (click)="cerrarModalCreacion()">Cancelar</button>
+      <button class="btn-primary" (click)="guardarCancha()" [disabled]="nuevaCancha.precioHora <= 0">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="canchaSeleccionada">
+  <div class="modal-card">
+    <div class="modal-icon" [ngClass]="canchaSeleccionada.estado === 'disponible' ? 'danger' : 'success'">
+       <i class="fas" [ngClass]="canchaSeleccionada.estado === 'disponible' ? 'fa-ban' : 'fa-check'"></i>
+    </div>
+    <h4>{{ canchaSeleccionada.estado === 'disponible' ? 'Deshabilitar' : 'Habilitar' }} Cancha</h4>
+    <p>¿Estás seguro de cambiar el estado de la <strong>Cancha {{ canchaSeleccionada.id }}</strong>?</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" (click)="cancelarCambioEstado()">Cancelar</button>
+      <button class="btn-primary" (click)="confirmarCambioEstado()">Confirmar</button>
+    </div>
+  </div>
+</div>

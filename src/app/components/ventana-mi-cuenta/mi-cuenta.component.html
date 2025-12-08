@@ -1,54 +1,110 @@
-<div class="container py-4">
-  <div class="card shadow-sm rounded-4">
+<div class="main-container">
+  
+  <button class="btn-volver" (click)="volver()">
+    <i class="fas fa-arrow-left"></i> Volver
+  </button>
+
+  <div class="profile-card">
+    
+    <div class="profile-header">
+      <div class="avatar-circle">
+        {{ getInitials() }}
+      </div>
+      <div class="header-text">
+        <h3>{{ persona.name }} {{ persona.lastname }}</h3>
+        <span class="user-role">Usuario Registrado</span>
+      </div>
+    </div>
+
+    <div *ngIf="actualizacionExitosa" class="alert-success-custom">
+      <i class="fas fa-check-circle"></i> Datos actualizados correctamente
+    </div>
+
     <div class="card-body">
-      <h3 class="card-title text-center mb-4">Mi Cuenta</h3>
 
-      <!-- Mensaje de éxito -->
-      <div *ngIf="actualizacionExitosa" class="alert alert-success text-center">
-        ✅ Tus datos fueron actualizados correctamente.
+      <div *ngIf="!mostrarFormularioEdicion" class="view-mode fade-in">
+        
+        <div class="info-group">
+          <label>Información Personal</label>
+          <div class="data-row">
+            <div class="icon"><i class="fas fa-envelope"></i></div>
+            <div class="data">
+              <span class="label">Email</span>
+              <span class="value">{{ persona.email }}</span>
+            </div>
+          </div>
+          
+          <div class="data-row">
+            <div class="icon"><i class="fas fa-id-card"></i></div>
+            <div class="data">
+              <span class="label">DNI</span>
+              <span class="value">{{ persona.dni }}</span>
+            </div>
+          </div>
+
+          <div class="data-row">
+            <div class="icon"><i class="fas fa-phone"></i></div>
+            <div class="data">
+              <span class="label">Teléfono</span>
+              <span class="value">{{ persona.phone }}</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary-action" (click)="irAModificar()">
+          <i class="fas fa-pen"></i> Editar Perfil
+        </button>
+
       </div>
 
-      <!-- Mostrar datos del usuario -->
-      <div *ngIf="!mostrarFormularioEdicion">
-        <ul class="list-group mb-4">
-          <li class="list-group-item"><strong>Nombre:</strong> {{ persona.name }}</li>
-          <li class="list-group-item"><strong>Apellido:</strong> {{ persona.lastname }}</li>
-          <li class="list-group-item"><strong>DNI:</strong> {{ persona.dni }}</li>
-          <li class="list-group-item"><strong>Email:</strong> {{ persona.email }}</li>
-          <li class="list-group-item"><strong>Teléfono:</strong> {{ persona.phone }}</li>
-        </ul>
-        <div class="text-end">
-          <button class="btn btn-warning" (click)="irAModificar()">Modificar datos</button>
+      <form *ngIf="mostrarFormularioEdicion" (ngSubmit)="guardarCambios()" class="edit-mode fade-in">
+        
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Nombre</label>
+            <input class="form-control" [(ngModel)]="persona.name" name="name" required />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Apellido</label>
+            <input class="form-control" [(ngModel)]="persona.lastname" name="lastname" required />
+          </div>
         </div>
-      </div>
 
-      <!-- Formulario de edición -->
-      <form *ngIf="mostrarFormularioEdicion" (ngSubmit)="guardarCambios()" #formCuenta="ngForm">
-        <div class="mb-3">
-          <label class="form-label">Nombre</label>
-          <input class="form-control" [(ngModel)]="persona.name" name="name" required />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Apellido</label>
-          <input class="form-control" [(ngModel)]="persona.lastname" name="lastname" required />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">DNI</label>
-          <input class="form-control" type="number" [(ngModel)]="persona.dni" name="dni" required />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Email</label>
-          <input class="form-control" type="email" [(ngModel)]="persona.email" name="email" required />
-        </div>
-        <div class="mb-3">
+        <div class="mb-4">
           <label class="form-label">Teléfono</label>
-          <input class="form-control" type="tel" [(ngModel)]="persona.phone" name="phone" />
+          <input class="form-control" type="tel" [(ngModel)]="persona.phone" name="phone" placeholder="Ej: 341..." />
         </div>
-        <div class="d-flex justify-content-between">
-          <button type="submit" class="btn btn-success">Guardar</button>
-          <button type="button" class="btn btn-secondary" (click)="mostrarFormularioEdicion = false">Cancelar</button>
+
+        <div class="readonly-section">
+          <div class="readonly-header">
+            <i class="fas fa-lock"></i> Datos protegidos
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label text-muted">DNI</label>
+              <input class="form-control input-locked" [value]="persona.dni" disabled />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label text-muted">Email</label>
+              <input class="form-control input-locked" [value]="persona.email" disabled />
+            </div>
+          </div>
         </div>
+
+        <div class="action-buttons">
+          <button type="button" class="btn-secondary" (click)="mostrarFormularioEdicion = false">
+            Cancelar
+          </button>
+          
+          <button type="submit" class="btn-save" [disabled]="loading">
+            <span *ngIf="!loading"><i class="fas fa-save me-2"></i> Guardar Cambios</span>
+            <span *ngIf="loading"><i class="fas fa-spinner fa-spin me-2"></i> Guardando...</span>
+          </button>
+        </div>
+
       </form>
+
     </div>
   </div>
 </div>

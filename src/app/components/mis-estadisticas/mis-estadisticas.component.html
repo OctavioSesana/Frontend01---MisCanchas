@@ -1,0 +1,81 @@
+<div class="stats-container">
+  
+  <div class="top-bar">
+    <a routerLink="/" class="btn-volver">
+      <i class="fas fa-arrow-left"></i> Volver
+    </a>
+  </div>
+
+  <div class="content-wrapper">
+    
+    <div class="header-section">
+      <div class="brand-badge">Mi Actividad</div>
+      <h1>|Mis Estadísticas|</h1>
+      <p>Resumen de tu actividad histórica en las canchas.</p>
+    </div>
+
+    <div *ngIf="loading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Calculando tus jugadas...</p>
+    </div>
+
+    <div *ngIf="!loading && usuarioId" class="stats-grid animate-fade-in">
+      
+      <div class="stat-card">
+        <div class="icon-circle">
+          <i class="fas fa-futbol"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ reporte.totalReservas }}</span>
+          <span class="stat-label">Partidos Jugados</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="icon-circle">
+          <i class="fas fa-calendar-day"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value text-capitalize">{{ reporte.diaFavorito }}</span>
+          <span class="stat-label">Día más activo</span>
+        </div>
+      </div>
+
+      <div class="stat-card full-width">
+        <div class="card-header">
+          <i class="fas fa-chart-pie"></i>
+          <h3>Canchas Más Elegidas</h3>
+        </div>
+        
+        <div class="progress-list">
+          <div *ngFor="let cancha of reporte.canchasStats" class="progress-item">
+            <div class="progress-info">
+              <span class="cancha-name">{{ cancha.nombre }}</span>
+              <span class="cancha-percent">{{ cancha.porcentaje }}%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" [style.width.%]="cancha.porcentaje"></div>
+            </div>
+          </div>
+
+          <div *ngIf="reporte.canchasStats.length === 0" class="no-data">
+            Aún no tienes suficientes reservas para generar estadísticas de canchas.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && !usuarioId" class="no-auth-card animate-fade-in">
+      <div class="lock-icon">
+        <i class="fas fa-lock"></i>
+      </div>
+      <h2>Inicia Sesión</h2>
+      <p>Necesitas acceder a tu cuenta para ver tu historial y estadísticas.</p>
+      
+      <a routerLink="/login" class="btn-login-action" style="color: #000080;">
+        Ir al Login <i class="fas fa-sign-in-alt"></i>
+      </a>
+    </div>
+
+  </div>
+</div>

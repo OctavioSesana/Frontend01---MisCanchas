@@ -1,27 +1,281 @@
+/* =========================================
+   CONTENEDOR GENERAL (Dark Slate Theme)
+   ========================================= */
 .toda-la-pagina {
-    background-color: #F0F8FF; /* Color celeste claro */
-    height: 100vh; /* Altura completa de la ventana */
+    min-height: 100vh;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #cef3ee;
+    padding: 20px;
+    
+    /* Fondo consistente con el resto de la app */
+    background: linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.85)), 
+                url('/assets/images/fondoLogin.jpg');
+    background-size: cover;
+    background-position: center;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    position: relative;
 }
 
-.container {
-    border: 2px solid #00BFFF; /* Color celeste */
-    padding: 20px;
+/* =========================================
+   TARJETA DE LOGIN
+   ========================================= */
+.login-card {
+    background-color: #ffffff;
+    padding: 40px;
     border-radius: 20px;
-    background-color: white; /* Fondo blanco */
-    width: 50%;
-    margin: 0 auto; /* Centrar el formulario */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
-    margin-top: 20px;
-    margin-bottom: 20px;
-    background-image: url('/assets/images/fondoLogin.jpg'); /* Cambia la ruta según tu estructura de carpetas */
-    background-repeat: no-repeat;
-    background-size: cover;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header de la tarjeta */
+.card-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #f1f5f9;
+    color: #0f172a;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
 }
 
 h2 {
+    color: #0f172a;
+    font-weight: 800;
+    margin: 0 0 5px 0;
+    font-size: 1.8rem;
+    letter-spacing: -0.5px;
+}
+
+p {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* =========================================
+   FORMULARIO E INPUTS
+   ========================================= */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #334155;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Wrapper para input con iconos */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    color: #94a3b8;
+    z-index: 1;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 40px 12px 40px; /* Padding extra para iconos */
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+    color: #0f172a;
+    background-color: #f8fafc;
+}
+
+.form-control:focus {
+    border-color: #0f172a; /* Foco oscuro elegante */
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.1);
+}
+
+/* Botón Ojo (Toggle Password) */
+.btn-toggle-pass {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.2s;
+}
+
+.btn-toggle-pass:hover {
+    color: #0f172a;
+}
+
+/* =========================================
+   BOTONES Y ACCIONES
+   ========================================= */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background-color: #0f172a; /* Dark Slate */
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #1e293b;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary:disabled {
+    background-color: #cbd5e1;
+    cursor: not-allowed;
+}
+
+/* Link Registro */
+.register-section {
+    margin-top: 25px;
     text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.register-text {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.link-registro {
+    color: #0f172a;
+    font-weight: 700;
+    text-decoration: none;
+    position: relative;
+    transition: color 0.2s;
+}
+
+.link-registro:hover {
+    color: #2563eb; /* Azul enlace */
+    text-decoration: underline;
+}
+
+/* Botón Volver Home (Flotante) */
+.btn-volver-home {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+}
+.btn-volver-home:hover { color: white; }
+
+/* =========================================
+   FEEDBACK MESSAGES
+   ========================================= */
+.feedback-msg {
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    text-align: center;
+    font-weight: 600;
+    animation: fadeIn 0.3s;
+}
+
+.success {
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
+
+.error {
+    background-color: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Responsive */
+@media (max-width: 480px) {
+    .btn-volver-home { top: 20px; left: 20px; font-size: 0.9rem; }
+    .login-card { padding: 30px 20px; }
+}
+
+/* Wrapper para alinear el link a la derecha */
+.forgot-pass-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.link-forgot {
+    color: #64748b;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.link-forgot:hover {
+    color: #0f172a;
+    text-decoration: underline;
+}
+
+/* Botón secundario (Cancelar) */
+.btn-secondary {
+    width: 100%;
+    padding: 12px;
+    background-color: transparent;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    color: #64748b;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    border-color: #94a3b8;
+    color: #334155;
+    background-color: #f8fafc;
 }

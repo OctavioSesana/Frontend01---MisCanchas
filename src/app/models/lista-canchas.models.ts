@@ -1,4 +1,6 @@
 export interface Cancha {
+        precioTemporal: number;
+        editando: boolean;
         id: number,
         estado:string,
         precioHora: number,
@@ -6,6 +8,7 @@ export interface Cancha {
     }
 
 export interface CanchaResponse {
+  precioHora: number;
   message: string;
   data: Cancha;
 }

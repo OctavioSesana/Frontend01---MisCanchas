@@ -1,70 +1,215 @@
-button {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #0057ff;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 15px 25px;
-  font-size: 16px;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #003ecc;
+/* Variables para mantener consistencia y calma */
+:root {
+  --bg-overlay-start: rgba(15, 23, 42, 0.92); /* Azul oscuro casi negro (Slate 900) */
+  --bg-overlay-end: rgba(30, 41, 59, 0.85);   /* Azul grisáceo (Slate 800) */
+  --accent-color: #10b981;                    /* Verde Esmeralda moderno */
+  --text-primary: #f1f5f9;                    /* Blanco humo */
+  --text-secondary: #94a3b8;                  /* Gris suave */
+  --card-bg: rgba(255, 255, 255, 1);
+  --card-hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .home-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  justify-content: center; /* Centra verticalmente */
-  align-items: center;     /* Centra horizontalmente */
-  height: 100vh;
-  background-image: url('/assets/images/fondo.jpeg');
-  background-size: cover;
-  background-position: center;
-  padding-top: 0; /* Ya no hace falta si centramos verticalmente */
-  z-index: 10;
-}
-
-.no-reservas {
-  color: rgb(14, 10, 238);
-  font-size: 24px;
-  text-align: center;
-  margin-top: 50px;
-  background-color: white;
-}
-
-.card-container {
-  margin-top: -180px; /* Ajusta el margen superior según sea necesario */
-  padding: -50px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.card {
-  background-color: #f9f9f9;
-  border: 10px solid #05789b;
-  border-radius: 5px;
-  padding: 15px;
-  margin: 10px 0;
+  min-height: 100vh;
   width: 100%;
-  max-width: 600px;
-}
-
-.page-container {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
   padding: 20px;
+  
+  /* DEGRADADO SUAVE: Gris perla a azul acero muy tenue */
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  
+  font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
-button i {
-  font-size: 24px;
+.content-wrapper {
+  width: 100%;
+  max-width: 1200px; /* CAMBIO: De 900px a 1200px para que entren las 4 */
+  text-align: center;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- Header Section --- */
+.header-section {
+  margin-bottom: 3rem;
+}
+
+.brand-badge {
+  display: inline-block;
+  background-color: rgba(16, 185, 129, 0.15); /* Fondo verde muy sutil */
+  color: var(--accent-color);
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.header-section h1 {
+  color: var(--text-primary);
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -1px; /* Estilo moderno "tight" */
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.header-section p {
+  color: var(--text-secondary);
+  font-size: 1.25rem;
+  margin-top: 10px;
+  font-weight: 300;
+}
+
+/* --- Grid de Tarjetas --- */
+.actions-grid {
+  display: grid;
+  /* CAMBIO: Forzamos 4 columnas de igual tamaño */
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 20px; /* Un poco menos de espacio entre ellas para que no se aprieten tanto */
+  padding: 10px;
+}
+
+/* --- Diseño de Tarjeta Individual --- */
+.action-card {
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  padding: 35px 25px;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+
+/* Iconos */
+.icon-container {
+  width: 70px;
+  height: 70px;
+  background-color: #f1f5f9; /* Gris muy claro */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.icon-container i {
+  font-size: 1.8rem;
+  color: #334155; /* Slate oscuro */
+}
+
+/* Textos dentro de la tarjeta */
+.card-text h3 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 1.2rem;
+  font-weight: 700;
   margin-bottom: 5px;
+}
+
+.card-text span {
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+/* --- Hover Effects --- */
+.action-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--card-hover-shadow);
+}
+
+.action-card:hover .icon-container {
+  background-color: var(--accent-color);
+  transform: scale(1.1);
+}
+
+.action-card:hover .icon-container i {
+  color: white;
+}
+
+.action-card:hover .card-text h3 {
+  color: var(--accent-color);
+}
+
+/* --- Tarjeta "Reservar" (Primary) Diferenciada --- */
+/* Opcional: Si quieres que la primera destaque más */
+.card-primary {
+  border-bottom: 4px solid var(--accent-color);
+}
+
+/* --- Animación de Entrada --- */
+@keyframes fadeInUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(30px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .header-section h1 {
+    font-size: 2.5rem;
+  }
+  
+  .actions-grid {
+    grid-template-columns: 1fr;
+    padding: 0 20px;
+  }
+  
+  .action-card {
+    flex-direction: row; /* En celular, poner icono al lado del texto ahorra espacio vertical */
+    justify-content: flex-start;
+    padding: 20px;
+    text-align: left;
+  }
+
+  .icon-container {
+    margin-bottom: 0;
+    margin-right: 20px;
+    width: 50px;
+    height: 50px;
+  }
+
+  .icon-container i {
+    font-size: 1.2rem;
+  }
+  
+  .card-text {
+    text-align: left;
+  }
+}
+
+/* Al final del archivo CSS */
+
+/* Para Tablets: 2 arriba y 2 abajo */
+@media (max-width: 1024px) {
+  .actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Para Celulares: Una debajo de la otra */
+@media (max-width: 600px) {
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .content-wrapper {
+    max-width: 100%; /* Aprovechar todo el ancho en celular */
+  }
 }

@@ -1,7 +1,317 @@
-.card {
-  border-radius: 1rem;
+/* =========================================
+   CONTENEDOR GENERAL
+   ========================================= */
+.main-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 80px 20px 40px;
+  
+  /* Fondo Dark Slate Degradado */
+  background: linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.85)), 
+              url('/assets/images/FondoReserva.webp');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #f8fafc;
 }
 
-textarea {
-  resize: none;
+.content-wrapper {
+  width: 100%;
+  max-width: 700px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* =========================================
+   TARJETA DE ACCESO DENEGADO
+   ========================================= */
+.restricted-card {
+  background-color: white;
+  padding: 50px 30px;
+  border-radius: 20px;
+  text-align: center;
+  color: #0f172a;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  margin-top: 40px;
+}
+
+.icon-lock {
+  font-size: 3rem;
+  color: #fbbf24; /* Amarillo ámbar */
+  margin-bottom: 20px;
+  background-color: #fffbeb;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.restricted-card h3 { font-weight: 800; margin-bottom: 10px; }
+.restricted-card p { color: #64748b; margin-bottom: 30px; }
+
+.btn-login-action {
+  background-color: #0f172a;
+  color: white;
+  text-decoration: none;
+  padding: 12px 30px;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: transform 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.btn-login-action:hover { transform: translateY(-2px); background-color: #1e293b; }
+
+
+/* =========================================
+   FORMULARIO DE COMENTARIO
+   ========================================= */
+.form-card {
+  background-color: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: slideDown 0.5s ease-out;
+  color: #0f172a;
+}
+
+.card-header-text { text-align: center; margin-bottom: 30px; }
+.card-header-text h3 { font-weight: 800; font-size: 1.8rem; margin: 0; }
+.card-header-text p { color: #64748b; margin-top: 5px; }
+
+/* Sección de Estrellas */
+.rating-section {
+  text-align: center;
+  margin-bottom: 30px;
+  background-color: #f8fafc;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px dashed #e2e8f0;
+}
+
+.rating-section label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #334155;
+}
+
+.stars-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.stars-container i {
+  color: #cbd5e1; /* Gris apagado */
+  transition: all 0.2s;
+}
+
+.stars-container i.active, .stars-container i:hover {
+  color: #fbbf24; /* Amarillo activo */
+  transform: scale(1.2);
+}
+
+.rating-label {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+/* Inputs */
+.input-group label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #475569;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.form-control {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.form-control:focus {
+  border-color: #0f172a;
+  outline: none;
+}
+
+/* Botón Enviar */
+.btn-submit {
+  background-color: #0f172a;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 12px;
+  font-weight: 700;
+  width: 100%;
+  font-size: 1rem;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background-color: #1e293b;
+  transform: translateY(-2px);
+}
+
+.btn-submit:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* Success Banner */
+.success-banner {
+  background-color: #ecfdf5;
+  color: #059669;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  animation: fadeIn 0.3s;
+}
+
+/* =========================================
+   LISTA DE COMENTARIOS
+   ========================================= */
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.section-title h4 { font-weight: 700; font-size: 1.2rem; color: #f1f5f9; margin: 0; }
+
+.badge-count {
+  background-color: rgba(255,255,255,0.1);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.reviews-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Tarjeta Individual de Review */
+.review-card {
+  background-color: white;
+  border-radius: 16px;
+  padding: 25px;
+  color: #0f172a;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.review-card:hover { transform: translateY(-3px); }
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+/* Avatar con iniciales (Igual a Mi Cuenta) */
+.avatar-circle {
+  width: 50px;
+  height: 50px;
+  background-color: #0f172a;
+  color: #10b981;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.user-info { display: flex; flex-direction: column; }
+.user-name { margin: 0; font-weight: 700; font-size: 1rem; }
+
+.static-stars { font-size: 0.8rem; margin-top: 3px; }
+.static-stars i { color: #e2e8f0; }
+.static-stars i.filled { color: #fbbf24; }
+
+.review-body p {
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  background-color: rgba(255,255,255,0.05);
+  border-radius: 16px;
+  border: 1px dashed rgba(255,255,255,0.2);
+}
+.empty-icon { font-size: 2.5rem; color: #94a3b8; margin-bottom: 15px; }
+
+/* =========================================
+   BOTÓN VOLVER
+   ========================================= */
+.btn-volver {
+  position: absolute;
+  top: -60px; /* Fuera del contenedor, arriba a la izquierda */
+  left: 0;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #cbd5e1;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-volver:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: white;
+}
+
+@keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .btn-volver { position: static; margin-bottom: 20px; }
 }

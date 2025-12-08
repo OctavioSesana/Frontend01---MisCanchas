@@ -1,51 +1,106 @@
-<div class="container mt-5">
-    <!-- Si NO hay sesión iniciada -->
-<div *ngIf="!usuarioConectado" class="acceso-denegado d-flex flex-column justify-content-center align-items-center" style="min-height: 300px;">
-    <div class="alert alert-warning text-center w-100" role="alert">
-        <h5 class="mb-2">⚠️ Acceso denegado</h5>
-        <p>Debes loguearte primero.</p>
-        <a class="btn btn-primary mt-2" routerLink="/login">Iniciar sesión</a>
+<div class="main-container">
+  
+  <div class="content-wrapper">
+
+    <button class="btn-volver" (click)="volver()">
+      <i class="fas fa-arrow-left"></i> Volver
+    </button>
+
+    <div *ngIf="!usuarioConectado" class="restricted-card">
+      <div class="icon-lock">
+        <i class="fas fa-lock"></i>
+      </div>
+      <h3>Acceso Restringido</h3>
+      <p>Necesitas iniciar sesión para compartir tu experiencia con nosotros.</p>
+      <a class="btn-login-action" routerLink="/login">
+        Ingresar ahora <i class="fas fa-arrow-right"></i>
+      </a>
     </div>
-</div>
 
-  <!-- Si HAY sesión iniciada -->
-<div *ngIf="usuarioConectado">
-    <h3 class="text-center mb-4">¡Dejanos tu comentario!</h3>
-
-     <!-- Mensaje de éxito -->
-    <div *ngIf="mostrarMensajeExito" class="alert alert-success text-center w-50 mx-auto">
-        ✅ ¡Comentario enviado con éxito!
-    </div>
-
-    <form (ngSubmit)="enviarComentario()" #comentarioForm="ngForm" class="card p-4 shadow rounded">
-        <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre</label>
-            <input type="text" id="nombre" class="form-control" [(ngModel)]="nuevoComentario.nombre" name="nombre" required>
+    <ng-container *ngIf="usuarioConectado">
+      
+      <div class="form-card">
+        
+        <div class="card-header-text">
+          <h3>Tu opinión nos importa</h3>
+          <p>Ayúdanos a mejorar contándonos tu experiencia</p>
+        </div>
+        
+        <div *ngIf="mostrarMensajeExito" class="success-banner">
+          <i class="fas fa-check-circle"></i> ¡Gracias! Tu comentario fue publicado.
         </div>
 
-        <div class="mb-3">
-            <label for="mensaje" class="form-label">Comentario</label>
-            <textarea id="mensaje" class="form-control" rows="3" [(ngModel)]="nuevoComentario.mensaje" name="mensaje" required></textarea>
+        <form (ngSubmit)="enviarComentario()" #comentarioForm="ngForm">
+          
+          <div class="rating-section">
+            <label>¿Qué te pareció el complejo?</label>
+            <div class="stars-container">
+              <i *ngFor="let star of [1,2,3,4,5]" 
+                 class="fas fa-star" 
+                 [class.active]="star <= nuevoComentario.calificacion"
+                 (click)="setCalificacion(star)">
+              </i>
+            </div>
+            <span class="rating-label" *ngIf="nuevoComentario.calificacion > 0">
+              {{ nuevoComentario.calificacion }} / 5 Estrellas
+            </span>
+          </div>
+
+          <div class="input-group">
+            <label>Tu mensaje</label>
+            <textarea 
+              class="form-control" 
+              rows="3" 
+              [(ngModel)]="nuevoComentario.mensaje" 
+              name="mensaje" 
+              required
+              placeholder="Las canchas estuvieron excelentes, el buffet muy bueno..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit" [disabled]="!nuevoComentario.calificacion || !nuevoComentario.mensaje">
+            Publicar Comentario
+          </button>
+        </form>
+      </div>
+
+      <div class="reviews-section">
+        
+        <div class="section-title">
+          <h4>Lo que dicen nuestros jugadores</h4>
+          <span class="badge-count" *ngIf="listaComentarios.length > 0">{{ listaComentarios.length }} Opiniones</span>
+        </div>
+        
+        <div *ngIf="listaComentarios.length === 0" class="empty-state">
+            <div class="empty-icon"><i class="far fa-comments"></i></div>
+            <p>Aún no hay comentarios. ¡Sé el primero en opinar!</p>
         </div>
 
-        <div class="mb-3">
-            <label for="calificacion" class="form-label">Calificación (opcional)</label>
-            <select id="calificacion" class="form-select" [(ngModel)]="nuevoComentario.calificacion" name="calificacion">
-                <option value="">Seleccionar</option>
-                <option *ngFor="let n of [1,2,3,4,5]" [value]="n">{{ n }} ⭐</option>
-            </select>
+        <div class="reviews-grid">
+          <div *ngFor="let comentario of listaComentarios.slice().reverse()" class="review-card">
+              
+              <div class="review-header">
+                  <div class="avatar-circle">
+                      {{ getInicial(comentario.nombre) }}
+                  </div>
+                  <div class="user-info">
+                      <h5 class="user-name">{{ comentario.nombre }}</h5>
+                      <div class="static-stars">
+                          <i *ngFor="let s of [1,2,3,4,5]" class="fas fa-star" 
+                             [class.filled]="s <= comentario.calificacion"></i>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="review-body">
+                  <p>{{ comentario.mensaje }}</p>
+              </div>
+
+          </div>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100">Enviar comentario</button>
-    </form>
+      </div>
 
-    <!-- Mostrar comentarios -->
-    <div *ngIf="listaComentarios.length > 0" class="mt-5">
-        <h4 class="text-center mb-4">Comentarios de otros usuarios</h4>
-        <div *ngFor="let comentario of listaComentarios" class="card mb-3 p-3 shadow-sm">
-            <h5>{{ comentario.nombre }}</h5>
-            <p class="mb-1">{{ comentario.mensaje }}</p>
-            <p *ngIf="comentario.calificacion">Calificación: {{ comentario.calificacion }} ⭐</p>
-        </div>
-    </div>
+    </ng-container>
+
+  </div>
 </div>

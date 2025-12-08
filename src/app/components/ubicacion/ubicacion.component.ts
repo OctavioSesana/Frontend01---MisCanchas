@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Reserva } from '../../models/lista-reservas.models';
 import { ReservaService } from '../../services/reserva.service';
 import { ApiService } from '../../services/api.service';
@@ -19,5 +19,9 @@ import { HttpClientModule } from '@angular/common/http';
   styleUrl: './ubicacion.component.css',
 })
 export class VentanaUbicacionComponent {
+  constructor(private location: Location) {}
 
+  volver(): void {
+    this.location.back();
+  }
 }

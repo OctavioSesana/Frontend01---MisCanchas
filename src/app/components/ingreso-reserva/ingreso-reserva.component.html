@@ -1,50 +1,117 @@
-<div class="container mt-4">
-
-  <!-- Si NO hay sesión iniciada -->
-  <div *ngIf="!usuarioConectado" class="acceso-denegado">
-        <h5>⚠️ Acceso denegado</h5>
-        <p>Debés iniciar sesión para realizar una reserva.
-        </p>
-        <a class="btn btn-primary" routerLink="/login">Iniciar sesión</a>
+<div class="main-container">
+  
+  <button class="btn-volver" (click)="volver()">
+    <i class="fas fa-arrow-left"></i> Volver
+  </button>
+  
+  <div *ngIf="!usuarioConectado" class="login-warning-card">
+    <div class="icon-warning">
+      <i class="fas fa-user-lock"></i>
+    </div>
+    <h3>Acceso Restringido</h3>
+    <p>Necesitas iniciar sesión para realizar una reserva.</p>
+    <a routerLink="/login" class="btn-primary-action">Iniciar Sesión</a>
   </div>
 
-  <!-- Si HAY sesión iniciada -->
-  <ng-container *ngIf="usuarioConectado">
-    <h2>Confirmar datos de la reserva</h2>
+  <div class="booking-card" *ngIf="usuarioConectado">
+    
+    <div class="card-header-title">
+      <h2>Finalizar Reserva</h2>
+      <p>Confirmá los detalles de tu partido</p>
+    </div>
+    
     <form (ngSubmit)="saveReserva()" #reservaForm="ngForm">
 
-      <div class="form-group">
-        <label for="fechaReserva">Fecha de la reserva:</label>
-        <input type="date" class="form-control" id="fechaReserva" [(ngModel)]="reserva.fechaReserva" name="fechaReserva" required />
+      <div class="info-grid">
+        <div class="info-item">
+            <span class="label">Reservando como</span>
+            <div class="value-box">
+                <i class="fas fa-user-circle"></i>
+                {{ reserva.mail_cliente }}
+            </div>
+        </div>
+        <div class="info-item">
+            <span class="label">Cancha seleccionada</span>
+            <div class="value-box">
+                <i class="fas fa-futbol"></i>
+                Cancha Nº {{ reserva.idCancha }}
+            </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="horaInicio">Hora de inicio:</label>
-        <input type="time" class="form-control" id="horaInicio" [(ngModel)]="reserva.horaInicio" name="horaInicio" required (change)="actualizarHoraFin()" />
+      <div class="divider"></div>
+
+      <div class="step-section">
+        <label class="step-label">
+            <span class="step-number">1</span> Elegí la fecha
+        </label>
+        
+        <div class="date-input-wrapper">
+          <input 
+            type="date" 
+            class="form-input-date" 
+            id="fechaReserva" 
+            [(ngModel)]="reserva.fechaReserva" 
+            name="fechaReserva" 
+            (change)="onFechaChange()" 
+            [min]="fechaMinima"
+            required 
+          />
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="horaFin">Hora de fin:</label>
-        <input type="time" class="form-control" id="horaFin" [(ngModel)]="reserva.horaFin" name="horaFin" readonly required />
+      <div class="step-section" *ngIf="reserva.fechaReserva">
+        <label class="step-label">
+            <span class="step-number">2</span> Seleccioná un horario
+        </label>
+        
+        <div *ngIf="cargandoTurnos" class="loading-state">
+           <div class="spinner"></div>
+           <span>Buscando disponibilidad...</span>
+        </div>
+
+        <div *ngIf="!cargandoTurnos && turnosDisponibles.length === 0" class="empty-turnos">
+           <i class="far fa-calendar-times"></i>
+           <span>No quedan turnos disponibles para esta fecha.</span>
+        </div>
+
+        <div class="turnos-grid" *ngIf="!cargandoTurnos">
+            <button 
+                type="button" 
+                *ngFor="let turno of turnosDisponibles"
+                class="btn-turno"
+                [class.selected]="turno === turnoSeleccionado"
+                (click)="seleccionarTurno(turno)">
+                {{ turno }}
+            </button>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>Reservando como:</label>
-        <p class="form-control-plaintext"><strong>{{ reserva.mail_cliente }}</strong></p>
+      <div class="summary-box" *ngIf="turnoSeleccionado">
+        <div class="summary-icon"><i class="fas fa-check"></i></div>
+        <div class="summary-details">
+            <strong>Resumen:</strong>
+            <span> Cancha {{reserva.idCancha}} • {{reserva.fechaReserva | date: 'dd/MM/yyyy'}} • {{reserva.horaInicio}}hs</span>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="idCancha">Número de cancha:</label>
-        <input type="number" class="form-control" id="idCancha" [(ngModel)]="reserva.idCancha" name="idCancha" readonly />
-      </div>
+      <button type="submit" class="btn-submit" [disabled]="reservaForm.invalid || !turnoSeleccionado">
+        Ir a Pagar (Seña 50%) <i class="fas fa-arrow-right"></i>
+      </button>
 
-      <button type="submit" class="btn btn-success mt-3" [disabled]="reservaForm.invalid">Confirmar Reserva</button>
     </form>
 
-    <div *ngIf="reservaConfirmada" class="alert alert-success mt-3 text-center">
-      ✅ ¡Reserva confirmada! Te llegará un correo de confirmación.
+    <div *ngIf="reservaConfirmada" class="success-overlay">
+      <div class="success-content">
+        <i class="fas fa-check-circle"></i>
+        <h3>¡Reserva Confirmada!</h3>
+        <p>Te estamos redirigiendo...</p>
+      </div>
     </div>
 
-    <div *ngIf="!emailRegistrado" class="alert alert-danger mt-3 text-center">
+    <div *ngIf="!emailRegistrado" class="error-msg">
       ❌ Email no registrado. Intente nuevamente.
     </div>
+
+  </div>
+</div>

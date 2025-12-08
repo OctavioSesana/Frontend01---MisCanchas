@@ -1,88 +1,155 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { RouterModule, Router } from '@angular/router';
+// import { HttpClientModule } from '@angular/common/http'; <--- ❌ BORRALO (Ya lo provees en main.ts)
 import { ApiService } from '../../services/api.service';
 import { FormsModule } from '@angular/forms';
 import { Persona } from '../../models/lista-personas.models';
 import { PersonaService } from '../../services/persona.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-ventana-login',
   standalone: true,
-  providers: [ApiService],
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule, // Recordar agregar siempre!!
-    HttpClientModule,
+    RouterModule,
+    // HttpClientModule, // <--- No hace falta acá si usas standalone
   ],
   templateUrl: './ventana-login.component.html',
   styleUrl: './ventana-login.component.css',
 })
-export class VentanaLoginComponent {
+export class VentanaLoginComponent implements OnInit {
   persona: Persona = {
     id: 0,
     name: '',
     lastname: '',
     dni: 0,
     email: '',
-    phone: 0,
+    phone: '',
     password: '',
   };
+  
   loginConfirmado: boolean = false;
   submitted: boolean = false;
+  cargando: boolean = false;
+  mostrarPassword: boolean = false;
+
+  vistaRecuperar: boolean = false;
+  emailRecuperacion: string = '';
+  mailEnviado: boolean = false;
+  mensajeErrorRecu: string = '';
 
   constructor(
     private apiService: ApiService,
     private personaService: PersonaService,
-    private router: Router // <-- Agregá el router aquí
+    private router: Router
   ) {}
 
-  loguearse(): void {
-    this.loginConfirmado = true;
-    console.log('Login confirmado', this.persona);
-  }
-
   ngOnInit(): void {
-    // Inicializa la persona con valores por defecto para una nueva persona.
     this.persona = {
-      id: 0, // o genera un ID temporal único si es necesario
+      id: 0,
       name: '',
       lastname: '',
       dni: 0,
       email: '',
-      phone: 0,
+      phone: '',
       password: '',
     };
+    
+    // Opcional: Limpiar token viejo al entrar al login
+    localStorage.removeItem('token');
+  }
+
+  togglePassword(): void {
+    this.mostrarPassword = !this.mostrarPassword;
+  }
+
+  cambiarVista() {
+    this.vistaRecuperar = !this.vistaRecuperar;
+    this.mailEnviado = false; // Resetear mensaje
+    this.mensajeErrorRecu = ''; // Limpiamos errores al cambiar vista
+    this.emailRecuperacion = '';}
+
+  enviarRecuperacion() {
+    if (!this.emailRecuperacion) return;
+
+    this.cargando = true;
+    this.mensajeErrorRecu = ''; // Reseteamos mensaje de error
+    this.mailEnviado = false;
+
+    this.apiService.recuperarPassword(this.emailRecuperacion).subscribe({
+      next: (res: any) => {
+        console.log(res);
+        this.mailEnviado = true; // Mostramos mensaje verde
+        this.cargando = false;
+        
+        setTimeout(() => {
+            this.cambiarVista();
+            this.emailRecuperacion = '';
+        }, 4000);
+      },
+      error: (err) => {
+        console.error(err);
+        this.cargando = false;
+        
+        // 👇 ACÁ CAPTURAMOS EL ERROR DEL BACKEND
+        if (err.status === 404) {
+            this.mensajeErrorRecu = '❌ No existe ningún usuario con este correo electrónico.';
+        } else {
+            this.mensajeErrorRecu = '❌ Ocurrió un error. Intente nuevamente.';
+        }
+      }
+    });
   }
 
   login(): void {
-  this.apiService.loginPersona(this.persona.email, this.persona.password).subscribe(
-    (persona) => {
-      console.log('Login exitoso', persona);
-      localStorage.setItem('usuarioLogueado', JSON.stringify(persona)); // <- Acá guardás sesión
-      this.personaService.savePersona(persona);
-      this.loginConfirmado = true;
-      this.submitted = true;
-    },
-    (error) => {
-      console.error('Error en login', error);
-      this.loginConfirmado = false;
-      this.submitted = true;
-    }
-  );
-}
+    if (this.cargando) return;
 
+    this.cargando = true;
+    this.submitted = false;
 
-  redirectToHome(): boolean {
-    // Redirige a la página principal si el login fue confirmado
-    if (this.loginConfirmado) {
-      setTimeout(() => {
-        window.location.href = '';
-      }, 3000);
-    }
-    return true;
+    this.apiService.loginPersona(this.persona.email, this.persona.password).subscribe({
+      next: (respuesta: any) => { // Le cambié el nombre a 'respuesta' para ser más claro
+        console.log('✅ Login exitoso:', respuesta);
+        
+        // 🚨 PASO CRÍTICO: GUARDAR EL TOKEN 🚨
+        if (respuesta.token) {
+          localStorage.setItem('token', respuesta.token);
+          console.log('🔑 Token guardado en LocalStorage');
+        } else {
+          console.warn('⚠️ OJO: El backend no devolvió un campo "token"');
+        }
+
+        // Manejo de datos de usuario
+        // OJO: Depende de cómo responda tu backend. 
+        // Si responde { token: "...", user: { ... } }, usá respuesta.user
+        const usuarioData = respuesta.user || respuesta.data || respuesta;
+
+        this.apiService.actualizarUsuario(usuarioData);
+        this.personaService.savePersona(usuarioData);
+        
+        this.loginConfirmado = true;
+        this.submitted = true;
+
+        setTimeout(() => {
+          // Chequeamos el rol en el objeto de usuario
+          const rol = usuarioData.rol || usuarioData.role;
+
+          if (rol === 'admin') {
+            this.router.navigate(['/admin']); 
+          } else {
+            this.router.navigate(['/']); 
+          }
+          this.cargando = false; 
+        }, 1000);
+      },
+      error: (error) => {
+        console.error('❌ Error en login:', error);
+        this.loginConfirmado = false;
+        this.submitted = true;
+        this.cargando = false;
+      }
+    });
   }
 }

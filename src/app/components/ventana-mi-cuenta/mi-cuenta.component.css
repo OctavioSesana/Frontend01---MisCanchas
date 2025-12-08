@@ -1,68 +1,303 @@
-/* Styles for Mi Cuenta Section */
-
-.mi-cuenta-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    margin: 0 auto;
+/* =========================================
+   CONTENEDOR GENERAL
+   ========================================= */
+.main-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  background: linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.85)), 
+              url('/assets/images/FondoReserva.webp');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  position: relative;
 }
 
-.mi-cuenta-header {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 20px;
-    text-align: center;
+/* =========================================
+   TARJETA DE PERFIL
+   ========================================= */
+.profile-card {
+  background-color: white;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: scaleUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.mi-cuenta-form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-.mi-cuenta-form label {
-    font-size: 14px;
-    color: #555;
+/* CABECERA (Header) */
+.profile-header {
+  padding: 40px 40px 20px 40px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid #f1f5f9;
 }
 
-.mi-cuenta-form input {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%;
+.avatar-circle {
+  width: 80px;
+  height: 80px;
+  background-color: #0f172a; /* Slate oscuro */
+  color: #10b981; /* Texto Verde Esmeralda */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-.mi-cuenta-form input:focus {
-    border-color: #007bff;
-    outline: none;
+.header-text h3 {
+  margin: 0;
+  color: #0f172a;
+  font-weight: 800;
+  font-size: 1.5rem;
 }
 
-.mi-cuenta-button {
-    padding: 10px 15px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.user-role {
+  background-color: #f1f5f9;
+  color: #64748b;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-top: 5px;
+  display: inline-block;
 }
 
-.mi-cuenta-button:hover {
-    background-color: #0056b3;
+/* CUERPO */
+.card-body {
+  padding: 40px;
 }
 
-.mi-cuenta-footer {
-    margin-top: 20px;
-    font-size: 14px;
-    color: #777;
-    text-align: center;
+/* =========================================
+   MODO LECTURA (View Mode)
+   ========================================= */
+.info-group label {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.data-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  transition: all 0.2s;
+}
+
+.data-row:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.data-row .icon {
+  width: 40px;
+  height: 40px;
+  background-color: #ecfdf5; /* Fondo verde muy claro */
+  color: #059669; /* Icono verde */
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.data .label {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 2px;
+}
+
+.data .value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.btn-primary-action {
+  width: 100%;
+  margin-top: 20px;
+  background-color: #0f172a;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary-action:hover {
+  background-color: #1e293b;
+  transform: translateY(-2px);
+}
+
+/* =========================================
+   MODO EDICIÓN (Edit Mode)
+   ========================================= */
+.form-label {
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  color: #0f172a;
+  transition: all 0.2s;
+}
+
+.form-control:focus {
+  border-color: #0f172a;
+  outline: none;
+}
+
+/* Sección Readonly (Protegida) */
+.readonly-section {
+  background-color: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.readonly-header {
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.input-locked {
+  background-color: #e2e8f0;
+  color: #64748b;
+  cursor: not-allowed;
+  border: none;
+}
+
+/* Botones de Acción */
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn-secondary {
+  flex: 1;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: #f1f5f9;
+  color: #334155;
+}
+
+.btn-save {
+  flex: 2;
+  background-color: #10b981; /* Verde éxito */
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-save:hover {
+  background-color: #059669;
+  transform: translateY(-2px);
+}
+
+.btn-save:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* Alerta Éxito */
+.alert-success-custom {
+  background-color: #ecfdf5;
+  color: #059669;
+  padding: 15px;
+  margin: 0 40px; /* Alineado al body */
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Botón Volver */
+.btn-volver {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #cbd5e1;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+}
+
+.btn-volver:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: white;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .btn-volver { top: 20px; left: 20px; }
+  .profile-header { flex-direction: column; text-align: center; }
+  .action-buttons { flex-direction: column-reverse; }
 }

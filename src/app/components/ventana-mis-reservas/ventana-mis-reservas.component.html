@@ -1,42 +1,125 @@
-<div class="container">
-
-  <!-- Mensaje de éxito -->
-  <div *ngIf="mostrarMensajeExito" class="alert alert-success text-center mt-3 w-50 mx-auto">
-    ✅ Reserva cancelada exitosamente.
+<div class="main-container">
+  
+  <div *ngIf="mostrarMensajeExito" class="toast-success">
+    <div class="toast-icon"><i class="fas fa-check"></i></div>
+    <span>Reserva cancelada exitosamente</span>
   </div>
 
-  <!-- Título -->
-  <h4 *ngIf="emailEncontrado && lista_reservas.length > 0" class="mt-4">
-    Reservas de <strong>{{ email }}</strong>
-  </h4>
-
-  <!-- Cartel si no hay sesión -->
-  <form *ngIf="!email" (ngSubmit)="buscarReservas()">
-    <div class="form-group">
-      <h3 class="text-center">Inicie sesión para ver aquí sus reservas</h3>
+  <div class="content-wrapper">
+    
+    <button class="btn-volver" (click)="volver()">
+      <i class="fas fa-arrow-left"></i> Volver
+    </button>
+    
+    <div class="section-header">
+      <h2>Mis Reservas</h2>
+      <p *ngIf="emailEncontrado">{{ email }}</p>
     </div>
-  </form>
 
-  <!-- Lista de reservas -->
-  <div class="card-container" *ngIf="emailEncontrado; else noReservas">
-    <div *ngFor="let reserva of lista_reservas" class="card mb-4 p-3">
-      <h3>Reserva Nº {{ reserva.id }}</h3>
-      <p><strong>Fecha:</strong> {{ reserva.fechaReserva }}</p>
-      <p><strong>Hora de inicio:</strong> {{ reserva.horaInicio }}</p>
-      <p><strong>Email:</strong> {{ reserva.mail_cliente }}</p>
-      <p><strong>Cancha Nº:</strong> {{ reserva.idCancha }}</p>
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-light" role="status"></div>
+      <p class="text-white mt-2">Cargando historial...</p>
+    </div>
 
-      <div class="d-flex justify-content-between mt-3">
-        <button routerLink="/articulos" class="btn btn-success" (click)="seleccionarReserva(reserva)">Reservar artículo/s</button>
-        <button class="btn btn-danger" (click)="reserva.id !== undefined && deleteReserva(reserva.id)">
-          Cancelar Reserva
-        </button>
+    <div *ngIf="!loading && (!email || !emailEncontrado || lista_reservas.length === 0)" class="empty-state-card">
+      <div class="empty-icon">
+        <i class="far fa-calendar-alt"></i>
+      </div>
+      <h3>Aún no tienes partidos jugados</h3>
+      <p>¡Es momento de pisar la cancha! Reserva tu primer turno ahora.</p>
+      <a routerLink="/reservas" class="btn-cta">
+        Reservar Cancha <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="table-container" *ngIf="!loading && emailEncontrado && lista_reservas.length > 0">
+      <table class="custom-table">
+        <thead>
+         <tr>
+          <th class="ps-4 sortable-header" (click)="alternarOrden()">
+            Fecha 
+            <span class="sort-icon">
+              <i class="fas" [ngClass]="ordenAscendente ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+            </span>
+          </th>
+          
+          <th>Hora</th>
+          <th>Cancha</th>
+          <th>Tipo</th> <th>Estado</th>
+          <th class="text-end pe-4">Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reserva of lista_reservas" class="reserva-row">
+            
+            <td class="ps-4">
+              <div class="date-badge">
+                <span class="day">{{ getDia(reserva.fechaReserva) }}</span>
+                <span class="month">{{ getMesCorto(reserva.fechaReserva) }}</span>
+              </div>
+            </td>
+
+            <td>
+              <div class="time-info">
+                <i class="far fa-clock"></i>
+                <span>{{ reserva.horaInicio }} hs</span>
+              </div>
+            </td>
+
+            <td>
+              <div class="cancha-info">
+                <strong>Cancha {{ reserva.idCancha }}</strong>
+                <small>Reserva #{{ reserva.id }}</small>
+              </div>
+            </td>
+
+            <td>
+              <span class="type-pill">
+                {{ obtenerTipoCancha(reserva.idCancha) | uppercase }}
+              </span>
+            </td>
+
+            <td>
+              <span class="status-badge" 
+                    [ngClass]="esCancelable(reserva.fechaReserva) ? 'status-active' : 'status-done'">
+                {{ esCancelable(reserva.fechaReserva) ? 'Pendiente' : 'Finalizada' }}
+              </span>
+            </td>
+
+            <td class="text-end pe-4">
+              <button *ngIf="esCancelable(reserva.fechaReserva)" 
+                      class="btn-icon-cancel" 
+                      title="Cancelar Reserva"
+                      (click)="reserva.id !== undefined && abrirModalCancelacion(reserva.id)">
+                <i class="fas fa-trash-alt"></i>
+                <span class="d-none d-md-inline ms-2">Cancelar</span>
+              </button>
+              
+              <span *ngIf="!esCancelable(reserva.fechaReserva)" class="text-muted small">
+                <i class="fas fa-check"></i> Completada
+              </span>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="modal-overlay" *ngIf="idReservaAEliminar !== null">
+    <div class="modal-card">
+      <div class="modal-icon-warning">
+        <i class="fas fa-exclamation"></i>
+      </div>
+      <h4>¿Cancelar Reserva?</h4>
+      <p>Vas a liberar el turno de la <strong>Cancha</strong>. Esta acción no se puede deshacer.</p>
+      
+      <div class="modal-actions">
+        <button class="btn-secondary-modal" (click)="cerrarModal()">Volver</button>
+        <button class="btn-danger-modal" (click)="confirmarEliminacion()">Sí, Cancelar</button>
       </div>
     </div>
   </div>
 
-  <!-- No hay reservas -->
-  <ng-template #noReservas>
-    <p class="no-reservas text-center mt-4">No tiene reservas pendientes.</p>
-  </ng-template>
 </div>

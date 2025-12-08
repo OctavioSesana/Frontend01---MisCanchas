@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CanchasComponent } from '../canchas/canchas.component.js';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../services/api.service.js';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -24,10 +24,12 @@ import { CanchaService } from '../../services/cancha.service.js';
 export class VentanaReservasComponent implements OnInit {
   // VARIABLES
   lista_canchas: Cancha[] = []; // arreglo de canchas
+  router: any;
 
   constructor(
     private canchaService: CanchaService,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -71,5 +73,17 @@ export class VentanaReservasComponent implements OnInit {
   trackByFn(_index: number, item: Cancha) {
     //solo se renderiza el elemento modificado
     return item.id;
+  }
+
+  seleccionarCancha(cancha: Cancha) {
+    console.log('Cancha seleccionada:', cancha);
+    // Aquí pon tu lógica original. 
+    // Si antes guardabas en localStorage y navegabas, mantenlo:
+    localStorage.setItem('canchaSeleccionada', JSON.stringify(cancha));
+    this.router.navigate(['/ingreso-reserva']); // O la ruta que corresponda
+  }
+
+  volver(): void {
+    this.location.back();
   }
 }

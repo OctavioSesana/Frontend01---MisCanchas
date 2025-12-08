@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { TopPageComponent } from './components/top-page/top-page.component.js';
 import { CanchasComponent } from './components/canchas/canchas.component.js';
@@ -8,8 +8,6 @@ import { FooterComponent } from './components/footer/footer.component';
 import { VentanaReservasComponent } from './components/ventana-reservas/ventana-reservas.component.js';
 import { routes } from './app.routes.js';
 import { VentanaHomeComponent } from './components/ventana-home/ventana-home.component.js';
-import { HttpClientModule } from '@angular/common/http';
-import { SobreNosotrosComponent } from './ventana-sobre-nosotros-component/sobre-nosotros.component.js';
 import { ApiService } from './services/api.service.js';
 
 @Component({
@@ -19,7 +17,6 @@ import { ApiService } from './services/api.service.js';
     ApiService
   ],
   imports: [
-    HttpClientModule,
     RouterOutlet,
     RouterModule,
     TopPageComponent,
@@ -30,5 +27,13 @@ import { ApiService } from './services/api.service.js';
   styleUrl: './app.component.css',
 })
 export class AppComponent {
-  
+  title = 'frontend';
+
+  // Inyectamos el Router y lo ponemos 'public' para usarlo en el HTML
+  constructor(public router: Router) {}
+
+  // Esta función nos dice si estamos en la zona admin
+  esRutaAdmin(): boolean {
+    return this.router.url.includes('/admin');
+  }
 }

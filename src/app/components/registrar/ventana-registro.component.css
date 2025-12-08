@@ -1,9 +1,250 @@
-.form-container {
-    border: 2px solid #00BFFF; /* Color celeste */
-    padding: 20px;
-    border-radius: 20px;
-    background-color: hsl(180, 83%, 47%); /* Fondo celeste claro */
-    width: 50%;
-    margin: 0 auto; /* Centrar el formulario */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+/* =========================================
+   CONTENEDOR GENERAL (Dark Slate)
+   ========================================= */
+.toda-la-pagina {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    background: linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.85)), 
+                url('/assets/images/fondoLogin.jpg');
+    background-size: cover;
+    background-position: center;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    position: relative;
 }
+
+/* =========================================
+   TARJETA REGISTRO
+   ========================================= */
+.register-card {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 650px; /* Más ancho para grilla de 2 columnas */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+.card-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.card-header h2 {
+    color: #0f172a;
+    font-weight: 800;
+    margin: 0;
+    font-size: 2rem;
+    letter-spacing: -0.5px;
+}
+
+.card-header p {
+    color: #64748b;
+    margin-top: 5px;
+}
+
+/* =========================================
+   GRILLA Y FORMULARIO
+   ========================================= */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+.form-group {
+    margin-bottom: 5px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #334155;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Inputs con Iconos */
+.input-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    z-index: 1;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px 12px 40px; /* Padding izquierdo para icono */
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+    color: #0f172a;
+    background-color: #f8fafc;
+}
+
+.form-control:focus {
+    border-color: #0f172a;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.1);
+}
+
+/* Toggle Password */
+.btn-toggle-pass {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+}
+.btn-toggle-pass:hover { color: #0f172a; }
+
+/* =========================================
+   SECCIÓN EMPLEADO (Switch & Código)
+   ========================================= */
+.empleado-section {
+    margin-top: 25px;
+    padding: 20px;
+    background-color: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+}
+
+/* Switch Custom */
+.custom-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.form-check-input {
+    width: 3em;
+    height: 1.5em;
+    cursor: pointer;
+}
+.form-check-input:checked {
+    background-color: #0f172a;
+    border-color: #0f172a;
+}
+
+.form-check-label {
+    margin: 0;
+    cursor: pointer;
+    color: #334155;
+    font-weight: 600;
+}
+
+/* Input Código Admin */
+.admin-code-wrapper {
+    margin-top: 15px;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.label-danger {
+    color: #ef4444; /* Rojo alerta */
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.input-danger {
+    border-color: #fca5a5;
+    background-color: #fef2f2;
+}
+.input-danger:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+/* =========================================
+   BOTONES Y FEEDBACK
+   ========================================= */
+.btn-primary {
+    width: 100%;
+    padding: 15px;
+    background-color: #0f172a;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #1e293b;
+    transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+    background-color: #cbd5e1;
+    cursor: not-allowed;
+}
+
+/* Mensajes */
+.feedback-msg {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 600;
+    animation: fadeIn 0.3s;
+}
+
+.success { background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+.error { background-color: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+
+/* Botón Volver */
+.btn-volver-login {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+}
+.btn-volver-login:hover { color: white; }
+
+/* Responsive */
+@media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .full-width { grid-column: span 1; }
+    .btn-volver-login { position: static; margin-bottom: 20px; }
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

@@ -1,16 +1,49 @@
-<div class="card-wrapper" *ngIf="canchas.length > 0; else noCanchas"> <!--si el arreglo de canchas tiene canchas entonces: -->
-  <div *ngFor="let cancha of canchas" class="card">                   <!-- para cada cancha-->
-    <h3 (click)="mostrarDetalles(cancha)">Cancha Nº {{ cancha.id }}</h3>
-    <div *ngIf="cancha === canchaSeleccionada" class="cancha-seleccionada"> <!--si se selecciona la cancha, se muestran detalles-->
-      <p>Tipo de Cancha: {{ cancha.tipoCancha }}</p>
-      <p>Precio por hora: ${{ cancha.precioHora }}</p>
+<div class="canchas-grid">
+  
+  <div *ngFor="let cancha of canchas" class="card-cancha" 
+       [class.disabled-card]="cancha.estado !== 'disponible'">
+    
+    <div class="card-top">
+      <span class="cancha-id">Cancha #{{ cancha.id }}</span>
+      
+      <div class="status-badge" [ngClass]="{'status-ok': cancha.estado === 'disponible', 'status-error': cancha.estado !== 'disponible'}">
+        <span class="status-dot"></span>
+        {{ cancha.estado === 'disponible' ? 'Disponible' : 'Mantenimiento' }}
+      </div>
     </div>
-    <div style="margin-top: 10px;">
-      <button routerLink="/ingreso-reserva" (click)="seleccionarCancha(cancha.id)" class="btn btn-success" style="background-color: rgba(2, 46, 2, 0.932);">Seleccionar</button>
+
+    <div class="card-main">
+      <div class="icon-wrapper">
+        <i class="fas fa-futbol"></i>
+      </div>
+      
+      <div class="info-wrapper">
+        <h3 class="cancha-type">{{ cancha.tipoCancha | titlecase }}</h3>
+        <span class="feature-text">Superficie profesional</span>
+      </div>
     </div>
+
+    <div class="divider"></div>
+
+    <div class="card-footer-action">
+      <div class="price-container">
+        <span class="currency">$</span>
+        <span class="amount">{{ cancha.precioHora }}</span>
+        <span class="period">/hora</span>
+      </div>
+
+      <button class="btn-action" 
+              (click)="cancha.estado === 'disponible' && seleccionarCancha(cancha)"
+              [disabled]="cancha.estado !== 'disponible'">
+        {{ cancha.estado === 'disponible' ? 'Reservar' : 'No disponible' }}
+      </button>
+    </div>
+
   </div>
+
 </div>
 
-<ng-template #noCanchas>
-  <p>No hay ninguna cancha disponible!</p>
-</ng-template>
+<div *ngIf="canchas && canchas.length === 0" class="empty-state">
+  <i class="fas fa-search"></i>
+  <p>No hay canchas disponibles con este filtro.</p>
+</div>
