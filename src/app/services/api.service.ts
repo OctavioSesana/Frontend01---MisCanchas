@@ -5,11 +5,12 @@ import { Cancha, CanchaResponse } from '../models/lista-canchas.models.js';
 import { Reserva } from '../models/lista-reservas.models.js';
 import { ReservaArticulo } from '../models/reserva-articulo.models.js';
 import { Persona } from '../models/lista-personas.models.js';
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  private apiUrl = `http://localhost:3000/api`;
+  private apiUrl = environment.apiUrl;
   private usuarioSubject = new BehaviorSubject<any>(this.getUserFromStorage());
   public usuarioActual$ = this.usuarioSubject.asObservable();
 
