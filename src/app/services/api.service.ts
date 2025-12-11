@@ -44,7 +44,7 @@ export class ApiService {
 
   // Método para obtener canchas
   getCanchas(): Observable<any> {
-    return this.http.get<Cancha[]>(`${this.apiUrl}/cancha`);
+    return this.http.get<Cancha[]>(`${this.apiUrl}/api/cancha`);
   }
 
   getCanchaById(id: number): Observable<CanchaResponse> {
